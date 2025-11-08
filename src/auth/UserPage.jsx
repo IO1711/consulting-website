@@ -7,7 +7,7 @@ const UserPage = () => {
   
   <div className="bg-[#032F2C] text-white py-12 flex flex-col items-center">
     <img src="avatar1.png" alt="User photo" className="w-32 h-32 md:w-48 md:h-48 rounded-full shadow-lg mb-4"/>
-    <h1 className="text-2xl font-semibold">Ozodakhon Iskandarova</h1>
+    <h1 className="text-2xl font-semibold">Ozodakhon Uktamova</h1>
     <p className="text-gray-300">ozodakhon@example.com</p>
   </div>
 
