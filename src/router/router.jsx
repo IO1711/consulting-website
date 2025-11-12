@@ -17,6 +17,7 @@ import CoursePage from "../components/services/CoursePage";
 import Overview from "../components/services/coursePageChildren/Overview";
 import Recordings from "../components/services/coursePageChildren/Recordings";
 import Resources from "../components/services/coursePageChildren/Resources";
+import AdminPage from "../adminTools/AdminPage";
 
 export const router = createBrowserRouter([
     {
@@ -88,6 +89,10 @@ export const router = createBrowserRouter([
                         element: <MyRequests/>
                     }
                 ]
+            },
+            {
+                path: "/adminPage",
+                element: <AdminPage/>
             }
         ],
         errorElement: <NotFound/>

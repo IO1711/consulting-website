@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 
 const UserPage = () => {
 
@@ -9,6 +9,7 @@ const UserPage = () => {
     <img src="avatar1.png" alt="User photo" className="w-32 h-32 md:w-48 md:h-48 rounded-full shadow-lg mb-4"/>
     <h1 className="text-2xl font-semibold">Ozodakhon Uktamova</h1>
     <p className="text-gray-300">ozodakhon@example.com</p>
+    <Link to="/adminPage">Admin</Link>
   </div>
 
   
