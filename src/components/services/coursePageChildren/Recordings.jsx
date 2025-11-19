@@ -4,11 +4,11 @@ const Recordings = () => {
     const recordings = [
         { id: "dQw4w9WgXcQ", title: "Kickoff & Orientation" },
         { id: "9bZkp7q19f0", title: "Positioning Workshop" },
-        { id: "3JZ_D3ELwOQ", title: "Pricing Deep Dive" },
+        { id: "uhLLvhDUdu0", title: "Pricing Deep Dive" },
     ];
 
     return <>
-        <section>
+        <section className="md:mb-15">
           <h2 className="mb-4 text-xl font-semibold">Session recordings</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {recordings.map((v) => (

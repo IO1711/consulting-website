@@ -8,7 +8,7 @@ const Resources = () => {
     ];
 
     return <>
-        <section>
+        <section className="md:mb-30">
           <h2 className="mb-3 text-xl font-semibold">Resources</h2>
           <ul className="divide-y rounded-2xl border">
             {resources.map((r, i) => (
