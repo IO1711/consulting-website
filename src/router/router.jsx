@@ -18,6 +18,14 @@ import Overview from "../components/services/coursePageChildren/Overview";
 import Recordings from "../components/services/coursePageChildren/Recordings";
 import Resources from "../components/services/coursePageChildren/Resources";
 import AdminPage from "../adminTools/AdminPage";
+import AddOpportunity from "../adminTools/AddOpportunity";
+import AddCourse from "../adminTools/AddCourse";
+import EditCourse from "../adminTools/EditCourse";
+import VisaRequests from "../adminTools/VisaRequests";
+import DocRequests from "../adminTools/DocRequests";
+import EditCourseChild from "../adminTools/EditCourseChild";
+import DocRequestChild from "../adminTools/DocRequestChild";
+import RegisterPage from "../auth/RegisterPage";
 
 export const router = createBrowserRouter([
     {
@@ -41,7 +49,7 @@ export const router = createBrowserRouter([
                 element: <Consulting/>
             },
             {
-                path: "/services/consulting/course",
+                path: "/services/consulting/course/:courseId",
                 element: <CoursePage/>,
                 children: [
                     {
@@ -49,11 +57,11 @@ export const router = createBrowserRouter([
                         element: <Overview/>
                     },
                     {
-                        path: "/services/consulting/course/recordings",
+                        path: "/services/consulting/course/:courseId/recordings",
                         element: <Recordings/>
                     },
                     {
-                        path: "/services/consulting/course/resources",
+                        path: "/services/consulting/course/:courseId/resources",
                         element: <Resources/>
                     }
                 ]
@@ -66,7 +74,7 @@ export const router = createBrowserRouter([
                 path: "/services/visahelp",
                 element: <VisaHelp/>
             },
-            {
+            /*{
                 path:"/about",
                 element: <ProtectedRoute/>,
                 children: [
@@ -75,24 +83,62 @@ export const router = createBrowserRouter([
                         element: <AboutPage/>
                     }
                 ]
-            },
+            },*/
             {
                 path: "/userpage",
-                element: <UserPage/>,
+                element: <ProtectedRoute/>,
                 children: [
                     {
-                        index: true,
-                        element: <MyCourses/>
-                    },
-                    {
-                        path: "/userpage/requests",
-                        element: <MyRequests/>
+                        element: <UserPage/>,
+                        children: [
+                            {
+                                index: true,
+                                element: <MyCourses/>
+                            },
+                            {
+                                path: "/userpage/requests",
+                                element: <MyRequests/>
+                            }
+                        ]
                     }
                 ]
             },
             {
                 path: "/adminPage",
-                element: <AdminPage/>
+                element: <AdminPage/>,
+                children: [
+                    {
+                        index: true,
+                        element: <AddOpportunity/>
+                    },
+                    {
+                        path: "/adminPage/addCourse",
+                        element: <AddCourse/>
+                    },
+                    {
+                        path: "/adminPage/editCourse",
+                        element: <EditCourse/>,
+                        children : [
+                            
+                        ]
+                    },
+                    {
+                        path: "/adminPage/editCourse/:courseId",
+                        element: <EditCourseChild/>
+                    },
+                    {
+                        path: "/adminPage/visaRequests",
+                        element: <VisaRequests/>
+                    },
+                    {
+                        path: "/adminPage/docRequests",
+                        element: <DocRequests/>
+                    },
+                    {
+                        path: "/adminPage/docRequests/:requestId",
+                        element: <DocRequestChild/>
+                    }
+                ]
             }
         ],
         errorElement: <NotFound/>
@@ -100,5 +146,9 @@ export const router = createBrowserRouter([
     {
         path: "/login",
         element: <Login/>
+    },
+    {
+        path: "/register",
+        element: <RegisterPage/>
     }
 ])

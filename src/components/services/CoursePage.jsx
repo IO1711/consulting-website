@@ -1,8 +1,9 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, Outlet, useParams } from "react-router-dom";
 
 const CoursePage = () => {
   // --- temporary test data (same shape as backend) ---
-  const course = {
+  /*const course = {
     id: 1,
     title: "Best course",
     startDate: "2025-11-19T00:00:00.000+00:00",
@@ -11,8 +12,24 @@ const CoursePage = () => {
     about: "this is about",
     lengthInWeek: 2,
     currentProgress: 0,
-  };
+  };*/
 
+  const [course, setCourse] = useState({});
+
+  const {courseId} = useParams();
+
+  useEffect(() => {
+    getCourseData()
+  }, []);
+
+  const getCourseData = async () => {
+    const response = await fetch(`https://consultingserver.onrender.com/api/v1/getProtected/getCourse/${courseId}`)
+    const data = await response.json();
+
+    console.log("Fetched: " + JSON.stringify(data));
+    setCourse(data);
+  }
+  
   const formatDate = (isoString) =>
     new Date(isoString).toLocaleDateString("en-GB", {
       day: "2-digit",
@@ -23,15 +40,15 @@ const CoursePage = () => {
   const TABS = [
     {
       name: "Overview",
-      link: "/services/consulting/course",
+      link: `/services/consulting/course/${course.id}`,
     },
     {
       name: "Recordings",
-      link: "/services/consulting/course/recordings",
+      link: `/services/consulting/course/${course.id}/recordings`,
     },
     {
       name: "Resources",
-      link: "/services/consulting/course/resources",
+      link: `/services/consulting/course/${course.id}/resources`,
     },
   ];
 
@@ -44,11 +61,11 @@ const CoursePage = () => {
         </h1>
 
         {/* Use description as a short subtitle */}
-        {course.description && (
+        {/*course.description && (
           <p className="mt-3 text-lg text-neutral-600">
             {course.description}
           </p>
-        )}
+        )*/}
 
         {/* Meta chips */}
         <div className="mt-4 flex flex-wrap gap-2 text-sm">
@@ -104,9 +121,10 @@ const CoursePage = () => {
         ))}
       </nav>
 
-      <Outlet />
+      <Outlet context={{course}}/>
     </div>
-  );
+  )
+;
 };
 
 export default CoursePage;

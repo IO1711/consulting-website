@@ -1,5 +1,58 @@
+import { useState } from "react";
+import { useAuthStore } from "../../stores/AuthStore";
+import { useNavigate } from "react-router-dom";
 
 const CheckDocs = () => {
+
+    const token = useAuthStore((s) => s.token);
+    const navigate = useNavigate();
+
+    const [files, setFiles] = useState([]);
+    const [program, setProgram] = useState("");
+    const [comment, setComment] = useState("");
+
+    const handleFileChange = (e) => {
+      const selected = e.target.files ? Array.from(e.target.files) : [];
+      setFiles(selected);
+    }
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      if(token==="") {
+        navigate("/login");
+        return;
+      };
+      if(!files || files.length === 0) {
+        alert("Please choose file(s)");
+        return;
+      }
+
+      const formData = new FormData();
+      files.forEach(file => {
+        formData.append("files", file);
+      });
+      formData.append("program", program);
+      formData.append("comment", comment);
+
+      console.log("Submitting payload: ", {
+        files,
+        program: program,
+        comment: comment
+      });
+
+      const response = await fetch("https://consultingserver.onrender.com/api/v1/request/docRequest",{
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formData
+      });
+      const data = await response.json();
+
+      console.log(JSON.stringify(data));
+    }
+
+
     return <>
          <section className="max-w-3xl mx-auto mb-25 px-4 py-12">
       <h1 className="text-4xl font-semibold text-[#04322f] mb-8">
@@ -7,9 +60,7 @@ const CheckDocs = () => {
       </h1>
 
       <form
-        action="/api/check-documents"
-        method="post"
-        encType="multipart/form-data"
+        onSubmit={handleSubmit}
         className="space-y-6"
       >
         {/* Program name / target */}
@@ -25,6 +76,7 @@ const CheckDocs = () => {
             name="program"
             type="text"
             required
+            onChange={(e) => setProgram(e.target.value)}
             placeholder="e.g., Erasmus+ KA171, NSP Slovakia, Fulbright…"
             className="w-full rounded-xl border border-neutral-300 bg-[#fffef8] px-4 py-3 outline-none focus:ring-2 focus:ring-[#04322f]/30"
           />
@@ -43,6 +95,7 @@ const CheckDocs = () => {
             name="files"
             type="file"
             multiple
+            onChange={handleFileChange}
             className="block w-full text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-[#04322f] file:px-4 file:py-2 file:text-[#fffef8] hover:file:opacity-90"
             // optionally: accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
           />
@@ -63,6 +116,7 @@ const CheckDocs = () => {
             id="info"
             name="info"
             rows="5"
+            onChange={(e) => setComment(e.target.value)}
             placeholder="Deadlines, special instructions, what to focus on, links…"
             className="w-full rounded-xl border border-neutral-300 bg-[#fffef8] px-4 py-3 outline-none focus:ring-2 focus:ring-[#04322f]/30"
           />

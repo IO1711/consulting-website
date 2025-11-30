@@ -1,68 +1,98 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const EditCourse = () => {
-    return <>
+
+    const [courses, setCourses] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");   // 🔍 search state
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      getAllCourses();
+    }, []);
+
+    const getAllCourses = async () => {
+      const response = await fetch("https://consultingserver.onrender.com/api/v1/get/allCourses");
+      const data = await response.json();
+      setCourses(data);
+    };
+
+    const handleEdit = (courseId) => {
+      navigate(`/adminPage/editCourse/${courseId}`);
+    };
+
+    // 🔎 COMPUTED FILTERED COURSES
+    const filteredCourses = courses.filter((c) =>
+      c.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return (
+      <>
         <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-[#04322f]">Courses</h2>
-              <div className="w-full max-w-xs">
-                <input
-                  className="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#04322f33]"
-                  placeholder="Search courses…"
-                />
-              </div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-[#04322f]">Courses</h2>
+
+            {/* Search Input */}
+            <div className="w-full max-w-xs">
+              <input
+                className="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#04322f33]"
+                placeholder="Search courses…"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}  // 🔥 UPDATE SEARCH
+              />
             </div>
+          </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              {[
-                { title: "Academic Writing B1–B2", learners: 28, progress: 40 },
-                { title: "IELTS Speaking Club", learners: 52, progress: 70 },
-                { title: "Web Dev Basics", learners: 18, progress: 15 },
-              ].map((c, i) => (
-                <div
-                  key={i}
-                  className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col gap-3"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="font-semibold text-[#04322f]">{c.title}</h3>
-                      <p className="text-sm text-gray-600">
-                        {c.learners} learners • Cohort progress
-                      </p>
-                    </div>
-                    <span className="text-xs px-2 py-1 rounded-full bg-[#04322f14] text-[#04322f]">
-                      #{i + 1}
-                    </span>
-                  </div>
-
+          {/* LIST OF FILTERED COURSES */}
+          <div className="grid gap-4 md:grid-cols-2">
+            {filteredCourses.map((c, i) => (
+              <div
+                key={c.id}
+                className="bg-white rounded-2xl border shadow-sm p-5 flex flex-col gap-3"
+              >
+                <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-[#04322f]"
-                        style={{ width: `${c.progress}%` }}
-                      />
-                    </div>
-                    <p className="text-xs mt-1 text-gray-600">{c.progress}%</p>
+                    <h3 className="font-semibold text-[#04322f]">{c.title}</h3>
+                    <p className="text-sm text-gray-600">
+                      {c.learners} learners • Cohort progress
+                    </p>
                   </div>
 
-                  <div className="flex gap-2 pt-1">
-                    <button
-                      type="button"
-                      className="px-4 py-2 rounded-xl border text-[#04322f] hover:bg-[#04322f0f]"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      className="px-4 py-2 rounded-xl bg-[#04322f] text-[#fffef8] hover:opacity-90"
-                    >
-                      Open
-                    </button>
-                  </div>
+                  <span className="text-xs px-2 py-1 rounded-full bg-[#04322f14] text-[#04322f]">
+                    #{i + 1}
+                  </span>
                 </div>
-              ))}
-            </div>
-          </section>
-    </>
-}
+
+                <div>
+                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-[#04322f]"
+                      style={{ width: `${c.currentProgress}%` }}
+                    />
+                  </div>
+                  <p className="text-xs mt-1 text-gray-600">{c.currentProgress}%</p>
+                </div>
+
+                <div className="flex gap-2 pt-1">
+                  <button
+                    type="button"
+                    className="px-4 py-2 rounded-xl border text-[#04322f] hover:bg-[#04322f0f]"
+                    onClick={() => handleEdit(c.id)}
+                  >
+                    Edit
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* No results message */}
+          {filteredCourses.length === 0 && (
+            <p className="text-gray-500 mt-4">No courses found.</p>
+          )}
+        </section>
+      </>
+    );
+};
 
 export default EditCourse;

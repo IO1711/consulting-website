@@ -1,9 +1,53 @@
+import { useEffect, useState } from "react";
 import ConsultingCard from "./ConsultingCard";
 
 const Consulting = () => {
 
-    const courses = [
-    {
+    const [courses, setCourses] = useState([]);
+
+    useEffect(() => {
+      loadCourses();
+    }, []);
+
+    const loadCourses = async () => {
+      const response = await fetch("https://consultingserver.onrender.com/api/v1/get/allCourses");
+      const data = await response.json();
+
+      console.log(data);
+
+      setCourses(data);
+    }
+
+    return <>
+        <section className="w-full bg-[#fffef8] text-[#04322f]">
+      <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+        {/* Page title */}
+        <div className="mx-auto max-w-3xl text-center">
+          <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+            Consulting
+          </h1>
+          <p className="mt-4 text-lg/7 text-[#04322fcc]">
+            Choose a course that fits your goals. Each card shows a short
+            overview—tap “Join” to proceed.
+          </p>
+        </div>
+
+        {/* Courses grid */}
+        <div className="mt-12 grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {courses.map((c) => (
+            <ConsultingCard key={c.id} id={c.id} name={c.title} desc={c.description}/>
+          ))}
+        </div>
+      </div>
+    </section>
+    </>
+}
+
+export default Consulting;
+
+
+/*
+  {
       id: 1,
       name: "Academic Writing & Research Methods",
       desc:
@@ -39,31 +83,4 @@ const Consulting = () => {
       desc:
         "Design clear objectives, budgets, and impact sections that reviewers understand and trust.",
     },
-  ];
-
-    return <>
-        <section className="w-full bg-[#fffef8] text-[#04322f]">
-      <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-        {/* Page title */}
-        <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-            Consulting
-          </h1>
-          <p className="mt-4 text-lg/7 text-[#04322fcc]">
-            Choose a course that fits your goals. Each card shows a short
-            overview—tap “Join” to proceed.
-          </p>
-        </div>
-
-        {/* Courses grid */}
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {courses.map((c) => (
-            <ConsultingCard key={c.id} name={c.name} desc={c.desc}/>
-          ))}
-        </div>
-      </div>
-    </section>
-    </>
-}
-
-export default Consulting;
+*/

@@ -1,6 +1,8 @@
+import { useOutletContext } from "react-router-dom";
+
 const Overview = () => {
   // --- temporary test data (same shape as backend) ---
-  const course = {
+  /*const course = {
     id: 1,
     title: "Best course",
     startDate: "2025-11-19T00:00:00.000+00:00",
@@ -9,7 +11,9 @@ const Overview = () => {
     about: "this is about",
     lengthInWeek: 2,
     currentProgress: 0,
-  };
+  };*/
+
+  const {course} = useOutletContext();
 
   // Simple generated syllabus based on lengthInWeek.
   // Later you can replace this with real week-by-week data.

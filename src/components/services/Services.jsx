@@ -10,7 +10,7 @@ const Services = () => {
     
     const testApi = async () => {
 
-        const res = await fetch("http://localhost:8080/api/v1/get/", {
+        const res = await fetch("https://consultingserver.onrender.com/api/v1/get/", {
             headers: {
                 "Content-Type" : "application/json",
                 "Authorization" : `Bearer ${token}`

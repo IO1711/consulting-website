@@ -1,7 +1,60 @@
+import { useState } from "react";
+import { useAuthStore } from "../../stores/AuthStore";
+import { useNavigate } from "react-router-dom";
 
 const VisaHelp = () => {
-    return <>
-        <section className="mx-auto max-w-3xl px-4 py-16">
+
+  const [request, setRequest] = useState({
+    telegram : "",
+    whatsApp : "",
+    email : "",
+    country : "",
+    purpose : ""
+  });
+  const [loading, setLoading] = useState(false);
+  const token = useAuthStore((s) => s.token);
+  const navigate = useNavigate();
+
+  const handleFormChange = (index, value) => {
+    setRequest((prev) => ({
+      ...prev,
+      [index] : value
+    }));
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Payload: " + JSON.stringify(request));
+
+    if(token === ""){
+      navigate("/login");
+      return;
+    }
+
+    try{
+      setLoading(true);
+
+      const response = await fetch("https://consultingserver.onrender.com/api/v1/request/visaRequest", {
+        method: "POST",
+        headers: {
+          "Content-Type" : "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(request)
+      });
+
+      const data = await response.json();
+
+      console.log(JSON.stringify(data));
+    } catch(e){
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return <>
+    <section className="mx-auto max-w-3xl px-4 py-16">
       <h1 className="text-4xl font-semibold text-center text-[#04322f]">
         Visa Help
       </h1>
@@ -11,8 +64,7 @@ const VisaHelp = () => {
       </p>
 
       <form
-        action="/api/visa-help"
-        method="post"
+        onSubmit={handleSubmit}
         className="space-y-8 rounded-2xl border border-black/10 bg-white p-8 shadow-sm"
       >
         {/* CONTACT INFO */}
@@ -25,6 +77,7 @@ const VisaHelp = () => {
             type="text"
             name="telegram"
             placeholder="Telegram username"
+            onChange={(event) => handleFormChange("telegram", event.target.value)}
             className="w-full rounded-xl border border-black/20 px-4 py-3 placeholder-black/40 focus:border-[#04322f] focus:outline-none"
           />
 
@@ -32,6 +85,7 @@ const VisaHelp = () => {
             type="text"
             name="whatsapp"
             placeholder="WhatsApp number"
+            onChange={(event) => handleFormChange("whatsApp", event.target.value)}
             className="w-full rounded-xl border border-black/20 px-4 py-3 placeholder-black/40 focus:border-[#04322f] focus:outline-none"
           />
 
@@ -39,6 +93,7 @@ const VisaHelp = () => {
             type="email"
             name="email"
             placeholder="Email address"
+            onChange={(event) => handleFormChange("email", event.target.value)}
             className="w-full rounded-xl border border-black/20 px-4 py-3 placeholder-black/40 focus:border-[#04322f] focus:outline-none"
           />
         </div>
@@ -52,6 +107,7 @@ const VisaHelp = () => {
             type="text"
             name="country"
             placeholder="e.g., Germany, Italy, South Korea..."
+            onChange={(event) => handleFormChange("country", event.target.value)}
             className="mt-2 w-full rounded-xl border border-black/20 px-4 py-3 placeholder-black/40 focus:border-[#04322f] focus:outline-none"
           />
         </div>
@@ -68,6 +124,7 @@ const VisaHelp = () => {
                 type="radio"
                 name="purpose"
                 value="study"
+                onChange={(event) => handleFormChange("purpose", event.target.value)}
                 className="h-4 w-4 accent-[#04322f]"
               />
               Study
@@ -78,6 +135,7 @@ const VisaHelp = () => {
                 type="radio"
                 name="purpose"
                 value="work"
+                onChange={(event) => handleFormChange("purpose", event.target.value)}
                 className="h-4 w-4 accent-[#04322f]"
               />
               Work
@@ -88,6 +146,7 @@ const VisaHelp = () => {
                 type="radio"
                 name="purpose"
                 value="travel"
+                onChange={(event) => handleFormChange("purpose", event.target.value)}
                 className="h-4 w-4 accent-[#04322f]"
               />
               Travel
@@ -104,7 +163,7 @@ const VisaHelp = () => {
         </button>
       </form>
     </section>
-    </>
+  </>
 }
 
 export default VisaHelp;

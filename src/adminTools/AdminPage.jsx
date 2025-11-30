@@ -1,36 +1,18 @@
 
 import { useState } from "react";
-import AddOpportunity from "./AddOpportunity";
-import AddCourse from "./AddCourse";
-import EditCourse from "./EditCourse";
-import DocRequests from "./DocRequests";
-import VisaRequests from "./VisaRequests";
+import { Link, Outlet } from "react-router-dom";
+import TabButton from "./utilities/TapButton";
 
 const AdminPage = () => {
   const TABS = [
-    { key: "add-opportunity", label: "Add Opportunity" },
-    { key: "add-course", label: "Add Course" },
-    { key: "edit-courses", label: "Edit Courses" },
-    { key: "doc-requests", label: "Document Check Requests" },
-    { key: "visa-requests", label: "Visa Help Requests" },
+    { key: "", label: "Add Opportunity" },
+    { key: "addCourse", label: "Add Course" },
+    { key: "editCourse", label: "Edit Courses" },
+    { key: "docRequests", label: "Document Check Requests" },
+    { key: "visaRequests", label: "Visa Help Requests" },
   ];
 
-  const [active, setActive] = useState(TABS[0].key);
-
-  const TabButton = ({ tab }) => (
-    <button
-      onClick={() => setActive(tab.key)}
-      className={`px-4 py-2 rounded-full text-sm md:text-base transition
-        ${
-          active === tab.key
-            ? "bg-[#04322f] text-[#fffef8] shadow"
-            : "text-[#04322f] hover:bg-[#04322f14]"
-        }`}
-      type="button"
-    >
-      {tab.label}
-    </button>
-  );
+  
 
   return (
     <div className="min-h-screen bg-[#fffef8]">
@@ -49,7 +31,7 @@ const AdminPage = () => {
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex flex-wrap gap-2 py-3">
             {TABS.map((t) => (
-              <TabButton key={t.key} tab={t} />
+              <TabButton key={t.key} tab={t}/>
             ))}
           </div>
         </div>
@@ -57,33 +39,37 @@ const AdminPage = () => {
 
       {/* Content */}
       <main className="mx-auto max-w-6xl px-4 py-8">
-        {/* Add Opportunity */}
-        {active === "add-opportunity" && (
-          <AddOpportunity/>
-        )}
-
-        {/* Add Course */}
-        {active === "add-course" && (
-          <AddCourse/>
-        )}
-
-        {/* Edit Courses */}
-        {active === "edit-courses" && (
-          <EditCourse/>
-        )}
-
-        {/* Document Check Requests */}
-        {active === "doc-requests" && (
-          <DocRequests/>
-        )}
-
-        {/* Visa Help Requests */}
-        {active === "visa-requests" && (
-          <VisaRequests/>
-        )}
+        <Outlet/>
       </main>
     </div>
   );
 };
 
 export default AdminPage;
+
+/*
+
+        {active === "add-opportunity" && (
+          <AddOpportunity/>
+        )}
+
+        
+        {active === "add-course" && (
+          <AddCourse/>
+        )}
+
+        
+        {active === "edit-courses" && (
+          <EditCourse/>
+        )}
+
+        
+        {active === "doc-requests" && (
+          <DocRequests/>
+        )}
+
+        
+        {active === "visa-requests" && (
+          <VisaRequests/>
+        )}
+*/

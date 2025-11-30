@@ -16,7 +16,7 @@ const AddCourse = () => {
 
   const handleSave = () => {
     console.log(courseData);
-    fetch("http://localhost:8080/api/v1/admin/saveCourse", {
+    fetch("https://consultingserver.onrender.com/api/v1/admin/saveCourse", {
       method: "POST",
       headers : {
         "Content-Type" : "application/json"

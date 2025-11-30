@@ -5,7 +5,7 @@ const ConsultingCard = (props) => {
     const navigate = useNavigate();
 
     const handleJoin = () => {
-        navigate("/services/consulting/course");
+        navigate(`/services/consulting/course/${props.id}`);
     }
 
     return <>

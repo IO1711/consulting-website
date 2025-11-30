@@ -22,7 +22,7 @@ const AddOpportunity = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("http://localhost:8080/api/v1/admin/saveOpportunity", {
+    fetch("https://consultingserver.onrender.com/api/v1/admin/saveOpportunity", {
       method: "POST",
       headers : {
         "Content-Type" : "application/json"
