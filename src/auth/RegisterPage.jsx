@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/AuthStore";
+import { useBaseUrlStore } from "../stores/BaseUrlStore";
 
 const RegisterPage = () => {
   const avatars = [
@@ -30,6 +31,7 @@ const RegisterPage = () => {
   });
 
   const setToken = useAuthStore((s) => s.login);
+  const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,7 +51,7 @@ const RegisterPage = () => {
   };
 
   const login = async (email, password) => {
-    const response = await fetch("https://consultingserver.onrender.com/api/v1/auth/login", {
+    const response = await fetch(`${baseUrl}api/v1/auth/login`, {
         method: "POST",
         headers: {
             "Content-Type" : "application/json"
@@ -101,7 +103,7 @@ const RegisterPage = () => {
     };
     console.log("Register payload: ", payload);
 
-    const response = await fetch("https://consultingserver.onrender.com/api/v1/auth/register", {
+    const response = await fetch(`${baseUrl}api/v1/auth/register`, {
         method: "POST",
         headers: {
             "Content-Type" : "application/json"

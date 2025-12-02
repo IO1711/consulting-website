@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuthStore } from "../../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
+import { useBaseUrlStore } from "../../stores/BaseUrlStore";
 
 const CheckDocs = () => {
 
@@ -10,6 +11,7 @@ const CheckDocs = () => {
     const [files, setFiles] = useState([]);
     const [program, setProgram] = useState("");
     const [comment, setComment] = useState("");
+    const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
     const handleFileChange = (e) => {
       const selected = e.target.files ? Array.from(e.target.files) : [];
@@ -40,7 +42,7 @@ const CheckDocs = () => {
         comment: comment
       });
 
-      const response = await fetch("https://consultingserver.onrender.com/api/v1/request/docRequest",{
+      const response = await fetch(`${baseUrl}api/v1/request/docRequest`,{
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`

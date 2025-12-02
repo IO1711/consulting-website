@@ -1,9 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
+import { useBaseUrlStore } from "../stores/BaseUrlStore";
 
 const EditCourseChild = () => {
   const { courseId } = useParams();
   const [file, setFile] = useState(null);
+  const baseUrl = useBaseUrlStore((s) => s.baseUrl);
   const effectiveCourseId = courseId ?? "1"; // dummy id if none in URL
 
   // ---- Form 1: list of { code, courseId } ----
@@ -46,7 +48,7 @@ const EditCourseChild = () => {
 
     // Example with fetch (when backend is ready):
     
-    fetch("https://consultingserver.onrender.com/api/v1/admin/saveRecordings", {
+    fetch(`${baseUrl}api/v1/admin/saveRecordings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -85,7 +87,7 @@ const handleSubmitFile = (e) => {
 
   // When backend is ready, something like:
   
-  fetch("https://consultingserver.onrender.com/api/v1/admin/saveResource", {
+  fetch(`${baseUrl}api/v1/admin/saveResource`, {
     method: "POST",
     body: formData, // DON'T set Content-Type manually; browser will set boundary
   })

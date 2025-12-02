@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuthStore } from "../../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
+import { useBaseUrlStore } from "../../stores/BaseUrlStore";
 
 const VisaHelp = () => {
 
@@ -14,6 +15,7 @@ const VisaHelp = () => {
   const [loading, setLoading] = useState(false);
   const token = useAuthStore((s) => s.token);
   const navigate = useNavigate();
+  const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
   const handleFormChange = (index, value) => {
     setRequest((prev) => ({
@@ -34,7 +36,7 @@ const VisaHelp = () => {
     try{
       setLoading(true);
 
-      const response = await fetch("https://consultingserver.onrender.com/api/v1/request/visaRequest", {
+      const response = await fetch(`${baseUrl}api/v1/request/visaRequest`, {
         method: "POST",
         headers: {
           "Content-Type" : "application/json",

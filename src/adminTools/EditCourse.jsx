@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useBaseUrlStore } from "../stores/BaseUrlStore";
 
 const EditCourse = () => {
 
     const [courses, setCourses] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");   // 🔍 search state
     const navigate = useNavigate();
+    const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
     useEffect(() => {
       getAllCourses();
     }, []);
 
     const getAllCourses = async () => {
-      const response = await fetch("https://consultingserver.onrender.com/api/v1/get/allCourses");
+      const response = await fetch(`${baseUrl}api/v1/get/allCourses`);
       const data = await response.json();
       setCourses(data);
     };

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { useAuthStore } from "../stores/AuthStore";
+import { useBaseUrlStore } from "../stores/BaseUrlStore";
 
 const Login = () => {
   const login = useAuthStore((s) => s.login);
@@ -9,6 +10,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -21,7 +23,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("https://consultingserver.onrender.com/api/v1/auth/login", {
+      const response = await fetch(`${baseUrl}api/v1/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

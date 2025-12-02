@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../stores/AuthStore";
+import { useBaseUrlStore } from "../stores/BaseUrlStore";
 
 const MyCourses = () => {
   const token = useAuthStore((s) => s.token);
 
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
   useEffect(() => {
     getUserCourses();
@@ -14,7 +16,7 @@ const MyCourses = () => {
   const getUserCourses = async () => {
     try {
       const response = await fetch(
-        `https://consultingserver.onrender.com/api/v1/getProtected/getUserCourses`,
+        `${baseUrl}api/v1/getProtected/getUserCourses`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

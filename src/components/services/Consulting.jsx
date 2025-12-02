@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import ConsultingCard from "./ConsultingCard";
+import { useBaseUrlStore } from "../../stores/BaseUrlStore";
 
 const Consulting = () => {
 
     const [courses, setCourses] = useState([]);
+    const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
     useEffect(() => {
       loadCourses();
     }, []);
 
     const loadCourses = async () => {
-      const response = await fetch("https://consultingserver.onrender.com/api/v1/get/allCourses");
+      const response = await fetch(`${baseUrl}api/v1/get/allCourses`);
       const data = await response.json();
 
       console.log(data);

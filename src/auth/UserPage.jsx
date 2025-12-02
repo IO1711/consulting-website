@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { useAuthStore } from "../stores/AuthStore";
+import { useBaseUrlStore } from "../stores/BaseUrlStore";
 
 const UserPage = () => {
   const token = useAuthStore((s) => s.token);
   const [user, setUser] = useState({});
+  const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
   useEffect(() => {
     
@@ -13,7 +15,7 @@ const UserPage = () => {
   }, []);
 
   const getUserDetails = async () => {
-    const response = await fetch("https://consultingserver.onrender.com/api/v1/getProtected/getCurrentUser", {
+    const response = await fetch(`${baseUrl}api/v1/getProtected/getCurrentUser`, {
       headers: {
         "Authorization": `Bearer ${token}`
       }

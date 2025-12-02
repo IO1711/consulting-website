@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useBaseUrlStore } from "../stores/BaseUrlStore";
 
 const DocRequests = () => {
   const [requests, setRequests] = useState([]);
   const navigate = useNavigate();
+  const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
   useEffect(() => {
     fetchDocRequests();
@@ -12,7 +14,7 @@ const DocRequests = () => {
   const fetchDocRequests = async () => {
     try {
       const response = await fetch(
-        "https://consultingserver.onrender.com/api/v1/admin/getDocRequests" // 🔁 change if needed
+        `${baseUrl}api/v1/admin/getDocRequests` // 🔁 change if needed
       );
       if (!response.ok) {
         throw new Error("Failed to fetch doc requests");

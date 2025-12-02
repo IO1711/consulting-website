@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { useBaseUrlStore } from "../../../stores/BaseUrlStore";
 
 const Resources = () => {
 
     const {course} = useOutletContext();
 
     const [resources, setResources] = useState([]);
+    const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
     useEffect(() => {
       getResources();
     },[]);
 
     const getResources = async () => {
-      const response = await fetch(`https://consultingserver.onrender.com/api/v1/getProtected/getResources/${course.id}`)
+      const response = await fetch(`${baseUrl}api/v1/getProtected/getResources/${course.id}`)
       const data = await response.json();
 
       console.log("Resources: " + JSON.stringify(data));

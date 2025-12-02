@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { useBaseUrlStore } from "../../../stores/BaseUrlStore";
 
 const Recordings = () => {
     //http://localhost:8080/api/v1/get/
     const {course} = useOutletContext();
 
     const [recordings, setRecordings] = useState([]);
+    const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
     useEffect(() => {
       getRecordings();
     },[]);
 
     const getRecordings = async () => {
-      const response = await fetch(`https://consultingserver.onrender.com/api/v1/getProtected/getRecordings/${course.id}`)
+      const response = await fetch(`${baseUrl}api/v1/getProtected/getRecordings/${course.id}`)
       const data = await response.json();
 
       setRecordings(data);

@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Notes from "./utilities/Notes";
+import { useBaseUrlStore } from "../stores/BaseUrlStore";
 
 
 const DocRequestChild = () => {
   const [request, setRequest] = useState({});
   const [showNotes, setShowNotes] = useState(false);
   const [notes, setNotes] = useState([]);
+  const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
   const { requestId } = useParams();
 
@@ -27,7 +29,7 @@ const DocRequestChild = () => {
 
   const getRequestData = async () => {
     const response = await fetch(
-      `https://consultingserver.onrender.com/api/v1/admin/getDocRequest/${requestId}`
+      `${baseUrl}api/v1/admin/getDocRequest/${requestId}`
     );
     const data = await response.json();
     console.log("Request data: " + JSON.stringify(data));
@@ -67,7 +69,7 @@ const DocRequestChild = () => {
 
     // post the payload
     
-    const res = await fetch("https://consultingserver.onrender.com/api/v1/admin/saveDocCheckNotes", {
+    const res = await fetch(`${baseUrl}api/v1/admin/saveDocCheckNotes`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -94,7 +96,7 @@ const DocRequestChild = () => {
       status : newStatus[status]
     }
 
-    const response = await fetch("https://consultingserver.onrender.com/api/v1/admin/editDocCheckStatus", {
+    const response = await fetch(`${baseUrl}api/v1/admin/editDocCheckStatus`, {
       method: "PUT",
       headers: {
         "Content-Type" : "application/json"

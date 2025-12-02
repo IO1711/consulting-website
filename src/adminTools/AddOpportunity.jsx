@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useBaseUrlStore } from "../stores/BaseUrlStore";
 
 const AddOpportunity = () => {
   const [newOpportunity, setNewOpportunity] = useState({
@@ -11,6 +12,7 @@ const AddOpportunity = () => {
     description: "",
     link: ""
   });
+  const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +24,7 @@ const AddOpportunity = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("https://consultingserver.onrender.com/api/v1/admin/saveOpportunity", {
+    fetch(`${baseUrl}api/v1/admin/saveOpportunity`, {
       method: "POST",
       headers : {
         "Content-Type" : "application/json"

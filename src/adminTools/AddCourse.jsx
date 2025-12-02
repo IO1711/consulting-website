@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useBaseUrlStore } from "../stores/BaseUrlStore";
+import SuccessTick from "../utility/SuccessTick";
+import Loader from "../utility/Loader";
 
 const AddCourse = () => {
   const [courseData, setCourseData] = useState({
@@ -8,6 +11,9 @@ const AddCourse = () => {
     description: "",
     about: ""
   });
+  const baseUrl = useBaseUrlStore((s) => s.baseUrl);
+  const [loading, setLoading] = useState(false);
+  const [showTick, setShowTick] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,8 +21,9 @@ const AddCourse = () => {
   };
 
   const handleSave = () => {
+    setLoading(true);
     console.log(courseData);
-    fetch("https://consultingserver.onrender.com/api/v1/admin/saveCourse", {
+    fetch(`${baseUrl}api/v1/admin/saveCourse`, {
       method: "POST",
       headers : {
         "Content-Type" : "application/json"
@@ -25,7 +32,12 @@ const AddCourse = () => {
     }).then(response => {
       return response.json();
     }).then(data => {
-      console.log(JSON.stringify(data))
+      console.log(JSON.stringify(data));
+      setLoading(false);
+      setShowTick(true);
+      setTimeout(() => {
+        setShowTick(false);
+      }, 3000);
     })
   };
 
@@ -109,9 +121,12 @@ const AddCourse = () => {
             type="button"
             onClick={handleSave}
             className="rounded-xl bg-[#04322f] text-[#fffef8] px-5 py-2.5 hover:opacity-90"
+            disabled={loading}
           >
             Save Course
           </button>
+          {loading && <Loader/>}
+          {showTick && <SuccessTick message={"Course saved"}/>}
         </div>
       </section>
     </>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../stores/AuthStore";
+import { useBaseUrlStore } from "../stores/BaseUrlStore";
 
 const MyRequests = () => {
 
@@ -7,6 +8,7 @@ const MyRequests = () => {
     const [visaRequests, setVisaRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const token = useAuthStore((s) => s.token);
+    const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
     useEffect(() => {
         getDocRequests();
@@ -15,7 +17,7 @@ const MyRequests = () => {
 
     const getDocRequests = async () => {
         try{
-            const response = await fetch("https://consultingserver.onrender.com/api/v1/getProtected/getUserDocRequests", {
+            const response = await fetch(`${baseUrl}api/v1/getProtected/getUserDocRequests`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
@@ -32,7 +34,7 @@ const MyRequests = () => {
 
     const getVisaRequests = async () => {
         try{
-            const response = await fetch("https://consultingserver.onrender.com/api/v1/getProtected/getUserVisaRequests", {
+            const response = await fetch(`${baseUrl}api/v1/getProtected/getUserVisaRequests`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
