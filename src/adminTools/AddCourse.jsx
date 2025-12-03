@@ -9,7 +9,9 @@ const AddCourse = () => {
     startDate: "",
     endDate: "",
     description: "",
-    about: ""
+    about: "",
+    langauge: "",
+    price: ""
   });
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
   const [loading, setLoading] = useState(false);
@@ -85,6 +87,31 @@ const AddCourse = () => {
               value={courseData.endDate}
               onChange={handleChange}
               className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#04322f33]"
+            />
+          </div>
+
+          {/* Language */}
+          <div className="flex flex-col">
+            <label className="text-sm text-gray-700 mb-1">Language</label>
+            <input
+              name="language"
+              value={courseData.language}
+              onChange={handleChange}
+              className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#04322f33]"
+              placeholder="English, Uzbek"
+            />
+          </div>
+
+          {/* Price */}
+          <div className="flex flex-col">
+            <label className="text-sm text-gray-700 mb-1">Price</label>
+            <input
+              type="number"
+              name="price"
+              value={courseData.price}
+              onChange={handleChange}
+              className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#04322f33]"
+              placeholder="400 000, 500 000"
             />
           </div>
 

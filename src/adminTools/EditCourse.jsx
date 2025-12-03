@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
+import Loader from "../utility/Loader";
 
 const EditCourse = () => {
 
@@ -8,6 +9,7 @@ const EditCourse = () => {
     const [searchTerm, setSearchTerm] = useState("");   // 🔍 search state
     const navigate = useNavigate();
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
       getAllCourses();
@@ -22,6 +24,18 @@ const EditCourse = () => {
     const handleEdit = (courseId) => {
       navigate(`/adminPage/editCourse/${courseId}`);
     };
+
+    const handleDelete = async (courseId) => {
+      setLoading(true);
+      const response = await fetch(`${baseUrl}api/v1/admin/deleteCourse/${courseId}`, {
+        method: "DELETE"
+      });
+      const data = await response.json();
+      setLoading(false);
+      getAllCourses();
+
+      console.log(JSON.stringify(data));
+    }
 
     // 🔎 COMPUTED FILTERED COURSES
     const filteredCourses = courses.filter((c) =>
@@ -83,6 +97,16 @@ const EditCourse = () => {
                   >
                     Edit
                   </button>
+                </div>
+                <div className="flex gap-2 pt-1">
+                  <button
+                    type="button"
+                    className="px-4 py-2 rounded-xl border text-[#04322f] hover:bg-[#04322f0f]"
+                    onClick={() => handleDelete(c.id)}
+                  >
+                    Delete
+                  </button>
+                  {loading && <Loader/>}
                 </div>
               </div>
             ))}
