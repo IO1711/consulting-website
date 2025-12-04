@@ -26,6 +26,7 @@ import DocRequests from "../adminTools/DocRequests";
 import EditCourseChild from "../adminTools/EditCourseChild";
 import DocRequestChild from "../adminTools/DocRequestChild";
 import RegisterPage from "../auth/RegisterPage";
+import RequestPage from "../auth/RequestPage";
 
 export const router = createBrowserRouter([
     {
@@ -98,6 +99,10 @@ export const router = createBrowserRouter([
                             {
                                 path: "/userpage/requests",
                                 element: <MyRequests/>
+                            },
+                            {
+                                path: "/userpage/requests/:requestId",
+                                element: <RequestPage/>
                             }
                         ]
                     }

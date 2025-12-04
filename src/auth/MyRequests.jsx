@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../stores/AuthStore";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
+import { useNavigate } from "react-router-dom";
 
 const MyRequests = () => {
 
@@ -9,6 +10,7 @@ const MyRequests = () => {
     const [loading, setLoading] = useState(true);
     const token = useAuthStore((s) => s.token);
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
+    const navigate = useNavigate();
 
     useEffect(() => {
         getDocRequests();
@@ -23,7 +25,7 @@ const MyRequests = () => {
                 }
             });
             const data = await response.json();
-            console.log(JSON.stringify(data));
+            console.log("My requests" + JSON.stringify(data));
             setDocRequests(data);
         } catch(e) {
             console.error(e);
@@ -49,6 +51,10 @@ const MyRequests = () => {
         }
     }
 
+    const handleView = (requestId) => {
+        navigate(`/userpage/requests/${requestId}`)
+    }
+
     return <>
         <div className="max-w-xl mx-auto p-4 mt-6">
             
@@ -66,7 +72,7 @@ const MyRequests = () => {
                     </h2>
                     <p className="text-sm m-2 text-gray-500">Status: {request.status}</p>
 
-                    <button className="rounded-xl m-2 bg-[#04322f] text-[#fffef8] px-6 py-2.5 font-medium hover:opacity-90 active:scale-[0.98] transition">
+                    <button className="rounded-xl m-2 bg-[#04322f] text-[#fffef8] px-6 py-2.5 font-medium hover:opacity-90 active:scale-[0.98] transition" onClick={() => handleView(request.id)}>
                         View
                     </button>
                 </div>

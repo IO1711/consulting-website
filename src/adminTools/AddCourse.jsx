@@ -45,7 +45,7 @@ const AddCourse = () => {
 
   return (
     <>
-      <section className="bg-white rounded-2xl shadow-sm border p-6">
+      <section className="bg-[#fffef8] rounded-2xl shadow-md border border-[#04322f22] p-6">
         <h2 className="text-xl font-semibold text-[#04322f] mb-4">
           New Course
         </h2>
@@ -59,7 +59,7 @@ const AddCourse = () => {
               name="title"
               value={courseData.title}
               onChange={handleChange}
-              className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#04322f33]"
+              className="rounded-xl border border-[#04322f33] bg-white px-3 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#04322f55] transition"
               placeholder="e.g., Academic Writing B1–B2"
             />
           </div>
@@ -74,7 +74,7 @@ const AddCourse = () => {
               name="startDate"
               value={courseData.startDate}
               onChange={handleChange}
-              className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#04322f33]"
+              className="rounded-xl border border-[#04322f33] bg-white px-3 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#04322f55] transition"
             />
           </div>
 
@@ -86,7 +86,7 @@ const AddCourse = () => {
               name="endDate"
               value={courseData.endDate}
               onChange={handleChange}
-              className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#04322f33]"
+              className="rounded-xl border border-[#04322f33] bg-white px-3 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#04322f55] transition"
             />
           </div>
 
@@ -97,7 +97,7 @@ const AddCourse = () => {
               name="language"
               value={courseData.language}
               onChange={handleChange}
-              className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#04322f33]"
+              className="rounded-xl border border-[#04322f33] bg-white px-3 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#04322f55] transition"
               placeholder="English, Uzbek"
             />
           </div>
@@ -110,7 +110,7 @@ const AddCourse = () => {
               name="price"
               value={courseData.price}
               onChange={handleChange}
-              className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#04322f33]"
+              className="rounded-xl border border-[#04322f33] bg-white px-3 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#04322f55] transition"
               placeholder="400 000, 500 000"
             />
           </div>
@@ -123,7 +123,7 @@ const AddCourse = () => {
               name="description"
               value={courseData.description}
               onChange={handleChange}
-              className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#04322f33]"
+              className="rounded-xl border border-[#04322f33] bg-white px-3 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#04322f55] transition"
               placeholder="One–two sentences…"
             />
           </div>
@@ -136,7 +136,7 @@ const AddCourse = () => {
               name="about"
               value={courseData.about}
               onChange={handleChange}
-              className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#04322f33]"
+              className="rounded-xl border border-[#04322f33] bg-white px-3 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#04322f55] transition"
               placeholder="Topics, weeks, materials…"
             />
           </div>
