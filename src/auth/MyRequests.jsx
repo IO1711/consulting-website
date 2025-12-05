@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "../stores/AuthStore";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import { useNavigate } from "react-router-dom";
+import Loader from "../utility/Loader";
 
 const MyRequests = () => {
 
@@ -56,7 +57,8 @@ const MyRequests = () => {
     }
 
     return <>
-        <div className="max-w-xl mx-auto p-4 mt-6">
+        {loading && <Loader/>}
+        {!loading && <div className="max-w-xl mx-auto p-4 mt-6">
             
             {!loading && (docRequests.length === 0 && visaRequests.length === 0) && (
                 <div className="text-gray-600">
@@ -93,7 +95,7 @@ const MyRequests = () => {
             })
             }
 
-        </div>
+        </div>}
     </>
 }
 
