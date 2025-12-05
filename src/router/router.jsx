@@ -27,6 +27,7 @@ import EditCourseChild from "../adminTools/EditCourseChild";
 import DocRequestChild from "../adminTools/DocRequestChild";
 import RegisterPage from "../auth/RegisterPage";
 import RequestPage from "../auth/RequestPage";
+import AddLearners from "../adminTools/AddLearners";
 
 export const router = createBrowserRouter([
     {
@@ -130,6 +131,10 @@ export const router = createBrowserRouter([
                     {
                         path: "/adminPage/editCourse/:courseId",
                         element: <EditCourseChild/>
+                    },
+                    {
+                        path: "/adminPage/addLearners/:courseId",
+                        element: <AddLearners/>
                     },
                     {
                         path: "/adminPage/visaRequests",

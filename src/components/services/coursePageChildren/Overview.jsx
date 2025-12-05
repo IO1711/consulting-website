@@ -42,11 +42,12 @@ const Overview = () => {
           <ul className="space-y-2 text-neutral-700">
             <li>• Duration: {course.lengthInWeek} week(s)</li>
             <li>• Short description: {course.description}</li>
+            <li>• Price: {course.price} UZS</li>
           </ul>
         </div>
 
         {/* Right: syllabus */}
-        <aside className="rounded-2xl border p-5">
+        {/*<aside className="rounded-2xl border p-5">
           <h3 className="mb-3 text-lg font-semibold">
             Syllabus (by week)
           </h3>
@@ -67,7 +68,7 @@ const Overview = () => {
               </li>
             ))}
           </ul>
-        </aside>
+        </aside>*/}
       </section>
     </>
   );

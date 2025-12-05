@@ -48,7 +48,7 @@ const ConsultingCard = (props) => {
                   onClick={handleJoin}
                   className="inline-flex items-center justify-center rounded-xl border border-[#04322f] px-4 py-2 text-sm font-medium text-[#04322f] transition hover:bg-[#04322f] hover:text-[#fffef8] active:scale-[0.99]"
                 >
-                  Join
+                  View
                 </button>
               </div>
 

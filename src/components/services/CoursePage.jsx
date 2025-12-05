@@ -80,7 +80,7 @@ const CoursePage = () => {
           </span>
           {/* Static for now; you can replace with real field later */}
           <span className="rounded-full border px-3 py-1">
-            Language: English
+            Language: {course.language}
           </span>
         </div>
 

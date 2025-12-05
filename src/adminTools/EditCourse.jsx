@@ -25,6 +25,10 @@ const EditCourse = () => {
       navigate(`/adminPage/editCourse/${courseId}`);
     };
 
+    const handleAddLearners = (courseId) => {
+      navigate(`/adminPage/addLearners/${courseId}`);
+    }
+
     const handleDelete = async (courseId) => {
       setLoading(true);
       const response = await fetch(`${baseUrl}api/v1/admin/deleteCourse/${courseId}`, {
@@ -105,6 +109,16 @@ const EditCourse = () => {
                     onClick={() => handleDelete(c.id)}
                   >
                     Delete
+                  </button>
+                  {loading && <Loader/>}
+                </div>
+                <div className="flex gap-2 pt-1">
+                  <button
+                    type="button"
+                    className="px-4 py-2 rounded-xl border text-[#04322f] hover:bg-[#04322f0f]"
+                    onClick={() => handleAddLearners(c.id)}
+                  >
+                    Add learners
                   </button>
                   {loading && <Loader/>}
                 </div>
