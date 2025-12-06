@@ -28,6 +28,7 @@ import DocRequestChild from "../adminTools/DocRequestChild";
 import RegisterPage from "../auth/RegisterPage";
 import RequestPage from "../auth/RequestPage";
 import AddLearners from "../adminTools/AddLearners";
+import JoinCourseRequestForm from "../components/services/coursePageChildren/JoinCourseRequestForm";
 
 export const router = createBrowserRouter([
     {
@@ -75,6 +76,10 @@ export const router = createBrowserRouter([
             {
                 path: "/services/visahelp",
                 element: <VisaHelp/>
+            },
+            {
+                path: "/services/joinCourse/:courseId",
+                element: <JoinCourseRequestForm/>
             },
             /*{
                 path:"/about",

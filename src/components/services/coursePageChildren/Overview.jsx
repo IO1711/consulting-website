@@ -1,6 +1,8 @@
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const Overview = () => {
+  const navigate = useNavigate();
+
   // --- temporary test data (same shape as backend) ---
   /*const course = {
     id: 1,
@@ -26,6 +28,10 @@ const Overview = () => {
     };
   });
 
+  const handleJoin = (courseId) => {
+    navigate(`/services/joinCourse/${courseId}`)
+  }
+
   return (
     <>
       <section className="grid gap-8 lg:grid-cols-3 md:mb-36">
@@ -44,8 +50,14 @@ const Overview = () => {
             <li>• Short description: {course.description}</li>
             <li>• Price: {course.price} UZS</li>
           </ul>
+          <button
+            className="rounded-xl mt-10 bg-[#04322f] text-[#fffef8] px-5 py-2.5 hover:opacity-90"
+            onClick={() => handleJoin(course.id)}
+          >
+            Join
+          </button>
         </div>
-
+        
         {/* Right: syllabus */}
         {/*<aside className="rounded-2xl border p-5">
           <h3 className="mb-3 text-lg font-semibold">
