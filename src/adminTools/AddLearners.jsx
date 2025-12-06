@@ -66,7 +66,7 @@ const AddLearners = () => {
         setSaved(false);
 
         try {
-            await fetch("http://localhost:8080/api/v1/admin/saveLearners", {
+            await fetch(`${baseUrl}api/v1/admin/saveLearners`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",

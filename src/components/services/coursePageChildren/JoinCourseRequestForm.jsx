@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuthStore } from "../../../stores/AuthStore";
 import SuccessTick from "../../../utility/SuccessTick";
+import { useBaseUrlStore } from "../../../stores/BaseUrlStore";
 
 const JoinCourseRequestForm = () => {
     const { courseId } = useParams();
     const token = useAuthStore((s) => s.token);
+    const baseUrl = useBaseUrlStore((s) => s.baseUrl);
     const [formData, setFormData] = useState({
         courseId: courseId,
         school: "",
@@ -35,7 +37,7 @@ const JoinCourseRequestForm = () => {
         console.log("Submitting:", formData);
 
         
-        const res = await fetch("http://localhost:8080/api/v1/request/joinCourse", {
+        const res = await fetch(`${baseUrl}api/v1/request/joinCourse`, {
             method: "POST",
             headers: { 
                 "Content-Type": "application/json",
