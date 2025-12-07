@@ -29,6 +29,7 @@ import RegisterPage from "../auth/RegisterPage";
 import RequestPage from "../auth/RequestPage";
 import AddLearners from "../adminTools/AddLearners";
 import JoinCourseRequestForm from "../components/services/coursePageChildren/JoinCourseRequestForm";
+import ManageJoinRequests from "../adminTools/ManageJoinRequests";
 
 export const router = createBrowserRouter([
     {
@@ -140,6 +141,10 @@ export const router = createBrowserRouter([
                     {
                         path: "/adminPage/addLearners/:courseId",
                         element: <AddLearners/>
+                    },
+                    {
+                        path: "/adminPage/manageJoinRequests/:courseId",
+                        element: <ManageJoinRequests/>
                     },
                     {
                         path: "/adminPage/visaRequests",

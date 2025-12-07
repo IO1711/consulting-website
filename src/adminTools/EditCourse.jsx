@@ -29,6 +29,10 @@ const EditCourse = () => {
       navigate(`/adminPage/addLearners/${courseId}`);
     }
 
+    const handleManageRequests = (courseId) => {
+      navigate(`/adminPage/manageJoinRequests/${courseId}`)
+    }
+
     const handleDelete = async (courseId) => {
       setLoading(true);
       const response = await fetch(`${baseUrl}api/v1/admin/deleteCourse/${courseId}`, {
@@ -102,6 +106,7 @@ const EditCourse = () => {
                     Edit
                   </button>
                 </div>
+                
                 <div className="flex gap-2 pt-1">
                   <button
                     type="button"
@@ -112,6 +117,7 @@ const EditCourse = () => {
                   </button>
                   {loading && <Loader/>}
                 </div>
+                
                 <div className="flex gap-2 pt-1">
                   <button
                     type="button"
@@ -122,10 +128,21 @@ const EditCourse = () => {
                   </button>
                   {loading && <Loader/>}
                 </div>
+                
+                <div className="flex gap-2 pt-1">
+                  <button
+                    type="button"
+                    className="px-4 py-2 rounded-xl border text-[#04322f] hover:bg-[#04322f0f]"
+                    onClick={() => handleManageRequests(c.id)}
+                  >
+                    Manage requests
+                  </button>
+                  {loading && <Loader/>}
+                </div>
               </div>
             ))}
           </div>
-
+            
           {/* No results message */}
           {filteredCourses.length === 0 && (
             <p className="text-gray-500 mt-4">No courses found.</p>
