@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import { useAuthStore } from "../stores/AuthStore";
+import Loader from "../utility/Loader";
 
 const ManageJoinRequests = () => {
     const { courseId } = useParams();
@@ -9,33 +10,16 @@ const ManageJoinRequests = () => {
     const [course, setCourse] = useState(null);
     const [requests, setRequests] = useState([]);
     const [approvedUsers, setApprovedUsers] = useState([]);
+    const [loading, setLoading] = useState(false);
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
     const token = useAuthStore((s) => s.token);
 
+
     useEffect(() => {
+        setLoading(true);
         getCourseDetails();
-        /*setCourse({
-            id: 252,
-            title: "New course",
-            startDate: "2025-11-12T00:00:00.000+00:00",
-            endDate: "2025-12-25T00:00:00.000+00:00",
-            language: null,
-            currentProgress: 60
-        });*/
 
         getRequests();
-        /*setRequests([
-            {
-                userId: 103,
-                email: "weasley@gmail.com",
-                firstname: "Ron",
-                lastname: "Weasley",
-                school: "MIT",
-                degree: "Masters",
-                major: "iOS",
-                year: 2
-            }
-        ]);*/
     }, []);
 
     const getCourseDetails = async () => {
@@ -103,8 +87,9 @@ const ManageJoinRequests = () => {
 
     if (!course) return <div className="p-6">Loading...</div>;
 
-    return (
-        <div className="max-w-7xl mx-auto mt-10 p-6 grid grid-cols-1 md:grid-cols-3 gap-6 bg-[#fffef8]">
+    return <>
+        {loading && <Loader/>}
+        {!loading && <div className="max-w-7xl mx-auto mt-10 p-6 grid grid-cols-1 md:grid-cols-3 gap-6 bg-[#fffef8]">
 
             {/* LEFT SIDE */}
             <div className="md:col-span-1 space-y-6">
@@ -206,8 +191,8 @@ const ManageJoinRequests = () => {
                     </div>
                 )}
             </div>
-        </div>
-    );
+        </div>}
+    </>;
 };
 
 export default ManageJoinRequests;
