@@ -35,6 +35,7 @@ const ManageJoinRequests = () => {
         const data = await response.json();
 
         console.log(JSON.stringify(data));
+        setLoading(false);
         setRequests(data);
     }
 
