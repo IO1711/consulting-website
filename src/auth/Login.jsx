@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { useAuthStore } from "../stores/AuthStore";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
+import Loader from "../utility/Loader";
 
 const Login = () => {
   const login = useAuthStore((s) => s.login);
@@ -10,6 +11,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
   const location = useLocation();
@@ -21,7 +23,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-
+    setLoading(true);
     try {
       const response = await fetch(`${baseUrl}api/v1/auth/login`, {
         method: "POST",
@@ -36,16 +38,18 @@ const Login = () => {
 
       if (!response.ok) {
         setError("Invalid email or password.");
+        setLoading(false);
         return;
       }
 
       const data = await response.json();
       login(data.token);
-
+      setLoading(false);
       // go back to the page user tried to access
       navigate(from, { replace: true });
     } catch (err) {
       console.error(err);
+      setLoading(false);
       setError("Something went wrong. Please try again.");
     }
   };
@@ -111,6 +115,7 @@ const Login = () => {
           >
             Log in
           </Button>
+          {loading && <Loader/>}
         </form>
 
         <p className="mt-6 text-xs text-neutral-600 text-center">
