@@ -26,7 +26,7 @@ const Consulting = () => {
 
     return <>
       <section className={`w-full bg-[#fffef8] text-[#04322f] ${courses.length < 4 ? "md:mb-50" : ""}`}>
-        {loading ? <Loader/> : <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
           {/* Page title */}
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -39,12 +39,12 @@ const Consulting = () => {
           </div>
 
           {/* Courses grid */}
-          <div className="mt-12 grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {loading ? <Loader/> : <div className="mt-12 grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
             {courses.map((c) => (
               <ConsultingCard key={c.id} id={c.id} name={c.title} desc={c.description}/>
             ))}
-          </div>
-        </div>}
+          </div>}
+        </div>
       </section>
     </>
 }
