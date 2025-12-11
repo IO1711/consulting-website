@@ -1,12 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
+import { useAuthStore } from "../stores/AuthStore";
 
 const EditCourseChild = () => {
   const { courseId } = useParams();
   const [file, setFile] = useState(null);
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
-  const effectiveCourseId = courseId ?? "1"; // dummy id if none in URL
+  const effectiveCourseId = courseId ?? "1";
+  const token = useAuthStore((s) => s.token);
 
   // ---- Form 1: list of { code, courseId } ----
   const [recordings, setRecordings] = useState([
@@ -50,7 +52,10 @@ const EditCourseChild = () => {
     
     fetch(`${baseUrl}api/v1/admin/saveRecordings`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+       },
       body: JSON.stringify(payload),
     })
       .then(res => res.json())
@@ -89,6 +94,9 @@ const handleSubmitFile = (e) => {
   
   fetch(`${baseUrl}api/v1/admin/saveResource`, {
     method: "POST",
+    headers: {
+      "Authorization": `Bearer ${token}`
+    },
     body: formData, // DON'T set Content-Type manually; browser will set boundary
   })
     .then(res => res.json())

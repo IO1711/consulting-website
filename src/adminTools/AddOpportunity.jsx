@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
+import { useAuthStore } from "../stores/AuthStore";
 
 const AddOpportunity = () => {
   const [newOpportunity, setNewOpportunity] = useState({
@@ -13,6 +14,7 @@ const AddOpportunity = () => {
     link: ""
   });
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
+  const token = useAuthStore((s) => s.token);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,7 +29,8 @@ const AddOpportunity = () => {
     fetch(`${baseUrl}api/v1/admin/saveOpportunity`, {
       method: "POST",
       headers : {
-        "Content-Type" : "application/json"
+        "Content-Type" : "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(newOpportunity)
     }).then(response => {

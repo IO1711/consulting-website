@@ -1,20 +1,26 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useBaseUrlStore } from "../../../stores/BaseUrlStore";
+import { useAuthStore } from "../../../stores/AuthStore";
 
 const Resources = () => {
 
-    const {course} = useOutletContext();
+    const {courseId} = useParams();
 
     const [resources, setResources] = useState([]);
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
+    const token = useAuthStore((s) => s.token);
 
     useEffect(() => {
       getResources();
     },[]);
 
     const getResources = async () => {
-      const response = await fetch(`${baseUrl}api/v1/getProtected/getResources/${course.id}`)
+      const response = await fetch(`${baseUrl}api/v1/getProtected/getResources/${courseId}`, {
+        headers : {
+          "Authorization": `Bearer ${token}`
+        }
+      })
       const data = await response.json();
 
       console.log("Resources: " + JSON.stringify(data));

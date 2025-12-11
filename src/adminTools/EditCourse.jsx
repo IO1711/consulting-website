@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import Loader from "../utility/Loader";
+import { useAuthStore } from "../stores/AuthStore";
 
 const EditCourse = () => {
 
@@ -10,6 +11,7 @@ const EditCourse = () => {
     const navigate = useNavigate();
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
     const [loading, setLoading] = useState(false);
+    const token = useAuthStore((s) => s.token);
 
     useEffect(() => {
       getAllCourses();
@@ -36,7 +38,10 @@ const EditCourse = () => {
     const handleDelete = async (courseId) => {
       setLoading(true);
       const response = await fetch(`${baseUrl}api/v1/admin/deleteCourse/${courseId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
       });
       const data = await response.json();
       setLoading(false);

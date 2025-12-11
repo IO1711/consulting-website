@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Notes from "./utilities/Notes";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
+import { useAuthStore } from "../stores/AuthStore";
 
 
 const DocRequestChild = () => {
@@ -9,6 +10,7 @@ const DocRequestChild = () => {
   const [showNotes, setShowNotes] = useState(false);
   const [notes, setNotes] = useState([]);
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
+  const token = useAuthStore((s) => s.token);
 
   const { requestId } = useParams();
 
@@ -29,7 +31,12 @@ const DocRequestChild = () => {
 
   const getRequestData = async () => {
     const response = await fetch(
-      `${baseUrl}api/v1/admin/getDocRequest/${requestId}`
+      `${baseUrl}api/v1/admin/getDocRequest/${requestId}`,
+      {
+        headers : {
+          "Authorization": `Bearer ${token}`
+        }
+      }
     );
     const data = await response.json();
     console.log("Request data: " + JSON.stringify(data));
@@ -73,6 +80,7 @@ const DocRequestChild = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(payload),
     });
@@ -99,7 +107,8 @@ const DocRequestChild = () => {
     const response = await fetch(`${baseUrl}api/v1/admin/editDocCheckStatus`, {
       method: "PUT",
       headers: {
-        "Content-Type" : "application/json"
+        "Content-Type" : "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(payload)
     });

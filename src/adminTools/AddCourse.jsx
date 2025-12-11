@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import SuccessTick from "../utility/SuccessTick";
 import Loader from "../utility/Loader";
+import { useAuthStore } from "../stores/AuthStore";
 
 const AddCourse = () => {
   const [courseData, setCourseData] = useState({
@@ -13,6 +14,7 @@ const AddCourse = () => {
     langauge: "",
     price: ""
   });
+  const token = useAuthStore((s) => s.token);
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
   const [loading, setLoading] = useState(false);
   const [showTick, setShowTick] = useState(false);
@@ -28,7 +30,8 @@ const AddCourse = () => {
     fetch(`${baseUrl}api/v1/admin/saveCourse`, {
       method: "POST",
       headers : {
-        "Content-Type" : "application/json"
+        "Content-Type" : "application/json",
+        "Authorization" : `Bearer: ${token}`
       },
       body: JSON.stringify(courseData)
     }).then(response => {

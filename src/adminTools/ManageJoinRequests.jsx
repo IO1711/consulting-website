@@ -23,7 +23,11 @@ const ManageJoinRequests = () => {
     }, []);
 
     const getCourseDetails = async () => {
-        const response = await fetch(`${baseUrl}api/v1/getProtected/getCourse/${courseId}`);
+        const response = await fetch(`${baseUrl}api/v1/getProtected/getCourse/${courseId}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
         const data = await response.json();
         console.log(JSON.stringify(data));
 
@@ -31,7 +35,11 @@ const ManageJoinRequests = () => {
     }
 
     const getRequests = async () => {
-        const response = await fetch(`${baseUrl}api/v1/admin/getCourseJoinRequests/${courseId}`);
+        const response = await fetch(`${baseUrl}api/v1/admin/getCourseJoinRequests/${courseId}`, {
+            headers : {
+                "Authorization": `Bearer ${token}`
+            }
+        });
         const data = await response.json();
 
         console.log(JSON.stringify(data));

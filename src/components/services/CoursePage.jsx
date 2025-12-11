@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useParams } from "react-router-dom";
 import { useBaseUrlStore } from "../../stores/BaseUrlStore";
+import { useAuthStore } from "../../stores/AuthStore";
 
 const CoursePage = () => {
   // --- temporary test data (same shape as backend) ---
@@ -17,6 +18,7 @@ const CoursePage = () => {
 
   const [course, setCourse] = useState({});
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
+  const token = useAuthStore((s) => s.token);
 
   const {courseId} = useParams();
 
@@ -25,7 +27,11 @@ const CoursePage = () => {
   }, []);
 
   const getCourseData = async () => {
-    const response = await fetch(`${baseUrl}api/v1/getProtected/getCourse/${courseId}`)
+    const response = await fetch(`${baseUrl}api/v1/get/getCourse/${courseId}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    })
     const data = await response.json();
 
     console.log("Fetched: " + JSON.stringify(data));

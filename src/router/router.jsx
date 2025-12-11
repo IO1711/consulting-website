@@ -61,12 +61,17 @@ export const router = createBrowserRouter([
                         element: <Overview/>
                     },
                     {
-                        path: "/services/consulting/course/:courseId/recordings",
-                        element: <Recordings/>
-                    },
-                    {
-                        path: "/services/consulting/course/:courseId/resources",
-                        element: <Resources/>
+                        element: <ProtectedRoute/>,
+                        children: [
+                            {
+                                path: "/services/consulting/course/:courseId/recordings",
+                                element: <Recordings/>
+                            },
+                            {
+                                path: "/services/consulting/course/:courseId/resources",
+                                element: <Resources/>
+                            }
+                        ]
                     }
                 ]
             },
@@ -82,16 +87,10 @@ export const router = createBrowserRouter([
                 path: "/services/joinCourse/:courseId",
                 element: <JoinCourseRequestForm/>
             },
-            /*{
+            {
                 path:"/about",
-                element: <ProtectedRoute/>,
-                children: [
-                    {
-                        index: true,
-                        element: <AboutPage/>
-                    }
-                ]
-            },*/
+                element: <AboutPage/>
+            },
             {
                 path: "/userpage",
                 element: <ProtectedRoute/>,
@@ -117,46 +116,51 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/adminPage",
-                element: <AdminPage/>,
+                element: <ProtectedRoute/>,
                 children: [
                     {
-                        index: true,
-                        element: <AddOpportunity/>
-                    },
-                    {
-                        path: "/adminPage/addCourse",
-                        element: <AddCourse/>
-                    },
-                    {
-                        path: "/adminPage/editCourse",
-                        element: <EditCourse/>,
-                        children : [
-                            
+                        element: <AdminPage/>,
+                        children: [
+                            {
+                                index: true,
+                                element: <AddOpportunity/>
+                            },
+                            {
+                                path: "/adminPage/addCourse",
+                                element: <AddCourse/>
+                            },
+                            {
+                                path: "/adminPage/editCourse",
+                                element: <EditCourse/>,
+                                children : [
+                                    
+                                ]
+                            },
+                            {
+                                path: "/adminPage/editCourse/:courseId",
+                                element: <EditCourseChild/>
+                            },
+                            {
+                                path: "/adminPage/addLearners/:courseId",
+                                element: <AddLearners/>
+                            },
+                            {
+                                path: "/adminPage/manageJoinRequests/:courseId",
+                                element: <ManageJoinRequests/>
+                            },
+                            {
+                                path: "/adminPage/visaRequests",
+                                element: <VisaRequests/>
+                            },
+                            {
+                                path: "/adminPage/docRequests",
+                                element: <DocRequests/>
+                            },
+                            {
+                                path: "/adminPage/docRequests/:requestId",
+                                element: <DocRequestChild/>
+                            }
                         ]
-                    },
-                    {
-                        path: "/adminPage/editCourse/:courseId",
-                        element: <EditCourseChild/>
-                    },
-                    {
-                        path: "/adminPage/addLearners/:courseId",
-                        element: <AddLearners/>
-                    },
-                    {
-                        path: "/adminPage/manageJoinRequests/:courseId",
-                        element: <ManageJoinRequests/>
-                    },
-                    {
-                        path: "/adminPage/visaRequests",
-                        element: <VisaRequests/>
-                    },
-                    {
-                        path: "/adminPage/docRequests",
-                        element: <DocRequests/>
-                    },
-                    {
-                        path: "/adminPage/docRequests/:requestId",
-                        element: <DocRequestChild/>
                     }
                 ]
             }

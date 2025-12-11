@@ -41,17 +41,29 @@ const AddLearners = () => {
     };
 
     const getCourseData = async () => {
-        const response = await fetch(`${baseUrl}api/v1/getProtected/getCourse/${courseId}`);
+        const response = await fetch(`${baseUrl}api/v1/get/getCourse/${courseId}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
         const data = await response.json();
         console.log(JSON.stringify(data));
         setCourse(data);
     }
 
     const getLearners = async () => {
-        const response = await fetch(`${baseUrl}api/v1/admin/getAllUsers`);
+        const response = await fetch(`${baseUrl}api/v1/admin/getAllUsers`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
         const data = await response.json();
 
-        const enrolledResponse = await fetch(`${baseUrl}api/v1/getProtected/getLearners/${courseId}`);
+        const enrolledResponse = await fetch(`${baseUrl}api/v1/getProtected/getLearners/${courseId}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
         const enrolledData = await enrolledResponse.json();
 
         console.log(JSON.stringify(data));

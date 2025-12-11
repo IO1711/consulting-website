@@ -1,28 +1,6 @@
-import { useState } from "react";
-import { useAuthStore } from "../../stores/AuthStore";
-import Button from "../Button";
 import ServiceCard from "./ServiceCard";
-import { useBaseUrlStore } from "../../stores/BaseUrlStore";
 
 const Services = () => {
-
-    const token = useAuthStore((s) => s.token);
-    const [apiRes, setApiRes] = useState("");
-    const baseUrl = useBaseUrlStore((s) => s.baseUrl);
-    
-    const testApi = async () => {
-
-        const res = await fetch(`${baseUrl}api/v1/get/`, {
-            headers: {
-                "Content-Type" : "application/json",
-                "Authorization" : `Bearer ${token}`
-            }
-        });
-
-        const data = await res.json();
-
-        setApiRes(JSON.stringify(data));
-    }
 
     const servicesLibrary = [
         {

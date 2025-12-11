@@ -1,20 +1,26 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useBaseUrlStore } from "../../../stores/BaseUrlStore";
+import { useAuthStore } from "../../../stores/AuthStore";
 
 const Recordings = () => {
     //http://localhost:8080/api/v1/get/
-    const {course} = useOutletContext();
+    const {courseId} = useParams();
 
     const [recordings, setRecordings] = useState([]);
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
+    const token = useAuthStore((s) => s.token);
 
     useEffect(() => {
       getRecordings();
     },[]);
 
     const getRecordings = async () => {
-      const response = await fetch(`${baseUrl}api/v1/getProtected/getRecordings/${course.id}`)
+      const response = await fetch(`${baseUrl}api/v1/getProtected/getRecordings/${courseId}`, {
+        headers : {
+          "Authorization": `Bearer ${token}`
+        }
+      })
       const data = await response.json();
 
       setRecordings(data);
