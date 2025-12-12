@@ -4,17 +4,6 @@ import { useBaseUrlStore } from "../../stores/BaseUrlStore";
 import { useAuthStore } from "../../stores/AuthStore";
 
 const CoursePage = () => {
-  // --- temporary test data (same shape as backend) ---
-  /*const course = {
-    id: 1,
-    title: "Best course",
-    startDate: "2025-11-19T00:00:00.000+00:00",
-    endDate: "2025-11-28T00:00:00.000+00:00",
-    description: "very short",
-    about: "this is about",
-    lengthInWeek: 2,
-    currentProgress: 0,
-  };*/
 
   const [course, setCourse] = useState({});
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
