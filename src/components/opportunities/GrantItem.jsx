@@ -6,7 +6,9 @@ const GrantItem = (props) => {
       props.startDate,
       props.regDLine,
       props.ageReq,
-      props.majorReq
+      props.majorReq,
+      props.opportunity.description,
+      props.opportunity.link
     );
   };
 
@@ -20,7 +22,7 @@ const GrantItem = (props) => {
         <div className="relative h-44 md:h-56 w-full overflow-hidden">
           <div
             className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
-            style={{ backgroundImage: `url(/korea.jpg)` }}
+            style={{ backgroundImage: `url(/${props.country}.png)` }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent" />
           <span className="absolute bottom-3 left-3 inline-flex items-center rounded-full bg-[#04322f] px-3 py-1 text-xs font-semibold tracking-wide text-[#fffef8]">

@@ -1,21 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "../Footer";
 import GrantDetails from "./GrantDetails";
 import GrantItem from "./GrantItem";
+import { useBaseUrlStore } from "../../stores/BaseUrlStore";
 
 const Opportunities = () => {
-
+    const baseUrl = useBaseUrlStore((s) => s.baseUrl);
     const [detailsOpen, setDetailsOpen] = useState(false)
+    const [opportunities, setOpportunities] = useState([]);
     const [grantDetails, setGrantDetails] = useState({
         country: "",
         programType: "",
         startDate: "",
         regDLine: "",
         ageReq: "",
-        majorReq: ""
+        majorReq: "",
+        description: "",
+        link: ""
     })
 
-    const updateGrantDetails = (country, programType, startDate, regDLine, ageReq, majorReq) => {
+    useEffect(() => {
+        getOpportunities();
+    }, []);
+
+    const getOpportunities = async () => {
+        const response = await fetch(`${baseUrl}api/v1/get/allOpportunities`);
+        const data = await response.json();
+        console.log(JSON.stringify(data));
+        setOpportunities(data);
+    }
+
+
+    const updateGrantDetails = (country, programType, startDate, regDLine, ageReq, majorReq, description, link) => {
 
         setGrantDetails({
             country : country,
@@ -23,7 +39,9 @@ const Opportunities = () => {
             startDate : startDate,
             regDLine : regDLine,
             ageReq : ageReq,
-            majorReq : majorReq
+            majorReq : majorReq,
+            description : description,
+            link : link
         })
 
         setDetailsOpen(true);
@@ -36,11 +54,9 @@ const Opportunities = () => {
         </div>
 
         <div className="my-8 md:grid md:grid-cols-4 md:gap-16">
-            <GrantItem country="Korea" programType="Bachelor's study" startDate="12.10.2026" regDLine="17.11.2025" ageReq="15-18" majorReq="highschool" onClick={updateGrantDetails}/>
-            <GrantItem country="Korea1" programType="Bachelor's study" startDate="12.10.2026" regDLine="17.11.2025" ageReq="15-18" majorReq="highschool" onClick={updateGrantDetails}/>
-            <GrantItem country="Korea2" programType="Bachelor's study" startDate="12.10.2026" regDLine="17.11.2025" ageReq="15-18" majorReq="highschool" onClick={updateGrantDetails}/>
-            <GrantItem country="Korea3" programType="Bachelor's study" startDate="12.10.2026" regDLine="17.11.2025" ageReq="15-18" majorReq="highschool" onClick={updateGrantDetails}/>
-            <GrantItem country="Korea4" programType="Bachelor's study" startDate="12.10.2026" regDLine="17.11.2025" ageReq="15-18" majorReq="highschool" onClick={updateGrantDetails}/>
+            {opportunities && opportunities.map(opportunity => 
+                <GrantItem key={opportunity.id} opportunity={opportunity} country={opportunity.country} programType={opportunity.programType} startDate={new Date(opportunity.startDate).toLocaleDateString()} regDLine={new Date(opportunity.regDeadline).toLocaleDateString()} ageReq={opportunity.ageReq} majorReq={opportunity.degreeReq} onClick={updateGrantDetails}/>    
+            )}
         </div>
 
 

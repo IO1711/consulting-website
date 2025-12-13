@@ -1,9 +1,13 @@
 import clsx from "clsx";
 import Button from "../Button";
+import { useNavigate } from "react-router-dom";
 
 const GrantDetails = (props) => {
+
+  const navigate = useNavigate();
+
   const classes = clsx(
-    // container panel (logic unchanged)
+    // container panel
     "fixed top-5 left-5 md:top-10 md:left-1/2 md:-translate-x-1/2 md:w-[900px] h-[90%] w-[90%] md:h-[85%] z-50 transform transition-transform duration-500 rounded-3xl border border-deep-forest-green bg-baby-powder shadow-2xl overflow-hidden",
     {
       "opacity-0 scale-95 pointer-events-none": !props.isHidden,
@@ -20,7 +24,7 @@ const GrantDetails = (props) => {
     ageReq = "Under 25 (at start)",
     majorReq = "Bachelor / Any Major",
     link = "", // if you pass a real link you can handle navigation yourself
-    brief =
+    description =
       "A fully-funded program supporting international students with tuition, monthly stipend, and language preparation.",
     image = "/korea.jpg",
   } = props.grantDetails || {};
@@ -54,7 +58,7 @@ const GrantDetails = (props) => {
           {/* Hero */}
           <div className="relative">
             <img
-              src={image}
+              src={`/${country}.png`}
               alt={country}
               className="w-full h-48 md:h-64 object-cover"
             />
@@ -79,7 +83,7 @@ const GrantDetails = (props) => {
               <h4 className="text-base md:text-lg font-semibold text-deep-forest-green mb-2">
                 About this program
               </h4>
-              <p className="text-neutral-700 leading-relaxed">{brief}</p>
+              <p className="text-neutral-700 leading-relaxed">{description}</p>
             </section>
 
             {/* Facts */}
@@ -102,15 +106,15 @@ const GrantDetails = (props) => {
             <section className="flex flex-wrap items-center gap-3">
               {/* Keep behavior up to you; this button is just visual */}
               <Button
-                onClick={() => {}}
+                onClick={() => {navigate(link)}}
                 disabled={!link}
               >
                 {link ? "Open official page" : "Official page (coming soon)"}
               </Button>
 
-              <div className="text-sm text-neutral-500">
+              {/*<div className="text-sm text-neutral-500">
                 Save or share options can go here later.
-              </div>
+              </div>*/}
             </section>
           </div>
         </div>

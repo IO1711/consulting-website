@@ -23,7 +23,7 @@ const ManageJoinRequests = () => {
     }, []);
 
     const getCourseDetails = async () => {
-        const response = await fetch(`${baseUrl}api/v1/getProtected/getCourse/${courseId}`, {
+        const response = await fetch(`${baseUrl}api/v1/get/getCourse/${courseId}`, {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
