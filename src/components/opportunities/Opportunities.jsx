@@ -55,18 +55,19 @@ const Opportunities = () => {
             style={{backgroundImage: `url(/opportunitiesPoster-2-mask2.png)`}}>
             <div className="text-white text-4xl md:text-7xl">Opportunities</div>
         </div>
+        {loading && <div className="mb-40 flex justify-center items-center text-center text-gray-600"><Loader/></div>}
+        {!loading && opportunities.length === 0 && 
+            <div className="mb-40 flex justify-center items-center text-center text-gray-600">
+                There no new opportunities currently.
+            </div>
+        }
 
-        <div className="my-8 md:grid md:grid-cols-4 md:gap-16">
-            {loading && <Loader/>}
-            {!loading && opportunities.length === 0 && 
-                <div className="mb-30 flex justify-center items-center text-center text-gray-600">
-                    There no new opportunities currently.
-                </div>
-            }
-            {opportunities && opportunities.map(opportunity => 
+        {opportunities && <div className="my-8 md:grid md:grid-cols-4 md:gap-16">
+            
+            {opportunities.map(opportunity => 
                 <GrantItem key={opportunity.id} opportunity={opportunity} country={opportunity.country} programType={opportunity.programType} startDate={new Date(opportunity.startDate).toLocaleDateString()} regDLine={new Date(opportunity.regDeadline).toLocaleDateString()} ageReq={opportunity.ageReq} majorReq={opportunity.degreeReq} onClick={updateGrantDetails}/>    
             )}
-        </div>
+        </div>}
 
 
         
