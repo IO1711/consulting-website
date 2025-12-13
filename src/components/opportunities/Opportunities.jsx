@@ -58,7 +58,7 @@ const Opportunities = () => {
         {loading && <div className="mt-20 mb-40 flex justify-center items-center text-center text-gray-600"><Loader/></div>}
         {!loading && opportunities.length === 0 && 
             <div className="mt-20 mb-40 flex justify-center items-center text-center text-gray-600">
-                There no new opportunities currently.
+                There are no new opportunities currently.
             </div>
         }
 
