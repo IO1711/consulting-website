@@ -55,9 +55,9 @@ const Opportunities = () => {
             style={{backgroundImage: `url(/opportunitiesPoster-2-mask2.png)`}}>
             <div className="text-white text-4xl md:text-7xl">Opportunities</div>
         </div>
-        {loading && <div className="mb-40 flex justify-center items-center text-center text-gray-600"><Loader/></div>}
+        {loading && <div className="mt-20 mb-40 flex justify-center items-center text-center text-gray-600"><Loader/></div>}
         {!loading && opportunities.length === 0 && 
-            <div className="mb-40 flex justify-center items-center text-center text-gray-600">
+            <div className="mt-20 mb-40 flex justify-center items-center text-center text-gray-600">
                 There no new opportunities currently.
             </div>
         }
