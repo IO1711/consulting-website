@@ -3,6 +3,7 @@ import Footer from "../Footer";
 import GrantDetails from "./GrantDetails";
 import GrantItem from "./GrantItem";
 import { useBaseUrlStore } from "../../stores/BaseUrlStore";
+import Loader from "../../utility/Loader";
 
 const Opportunities = () => {
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
@@ -17,7 +18,8 @@ const Opportunities = () => {
         majorReq: "",
         description: "",
         link: ""
-    })
+    });
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         getOpportunities();
@@ -28,6 +30,7 @@ const Opportunities = () => {
         const data = await response.json();
         console.log(JSON.stringify(data));
         setOpportunities(data);
+        setLoading(false);
     }
 
 
@@ -54,6 +57,7 @@ const Opportunities = () => {
         </div>
 
         <div className="my-8 md:grid md:grid-cols-4 md:gap-16">
+            {loading && <Loader/>}
             {opportunities && opportunities.map(opportunity => 
                 <GrantItem key={opportunity.id} opportunity={opportunity} country={opportunity.country} programType={opportunity.programType} startDate={new Date(opportunity.startDate).toLocaleDateString()} regDLine={new Date(opportunity.regDeadline).toLocaleDateString()} ageReq={opportunity.ageReq} majorReq={opportunity.degreeReq} onClick={updateGrantDetails}/>    
             )}

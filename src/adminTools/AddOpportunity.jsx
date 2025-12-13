@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import { useAuthStore } from "../stores/AuthStore";
+import Loader from "../utility/Loader";
 
 const AddOpportunity = () => {
   const [newOpportunity, setNewOpportunity] = useState({
@@ -15,6 +16,7 @@ const AddOpportunity = () => {
   });
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
   const token = useAuthStore((s) => s.token);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,6 +28,7 @@ const AddOpportunity = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
     fetch(`${baseUrl}api/v1/admin/saveOpportunity`, {
       method: "POST",
       headers : {
@@ -37,6 +40,7 @@ const AddOpportunity = () => {
       return response.json();
     }).then(data => {
       console.log(JSON.stringify(data))
+      setLoading(false);
     })
   };
 
@@ -174,6 +178,7 @@ const AddOpportunity = () => {
           >
             Save Opportunity
           </button>
+          {loading && <Loader/>}
         </div>
       </form>
     </section>
