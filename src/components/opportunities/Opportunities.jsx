@@ -58,6 +58,11 @@ const Opportunities = () => {
 
         <div className="my-8 md:grid md:grid-cols-4 md:gap-16">
             {loading && <Loader/>}
+            {!loading && opportunities.length === 0 && 
+                <div>
+                    There no new opportunities currently.
+                </div>
+            }
             {opportunities && opportunities.map(opportunity => 
                 <GrantItem key={opportunity.id} opportunity={opportunity} country={opportunity.country} programType={opportunity.programType} startDate={new Date(opportunity.startDate).toLocaleDateString()} regDLine={new Date(opportunity.regDeadline).toLocaleDateString()} ageReq={opportunity.ageReq} majorReq={opportunity.degreeReq} onClick={updateGrantDetails}/>    
             )}
