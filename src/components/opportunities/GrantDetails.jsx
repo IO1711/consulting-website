@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 const GrantDetails = (props) => {
 
-  const navigate = useNavigate();
 
   const classes = clsx(
     // container panel
@@ -106,7 +105,7 @@ const GrantDetails = (props) => {
             <section className="flex flex-wrap items-center gap-3">
               {/* Keep behavior up to you; this button is just visual */}
               <Button
-                onClick={() => {navigate(link)}}
+                onClick={() => window.open(link, "_blank")}
                 disabled={!link}
               >
                 {link ? "Open official page" : "Official page (coming soon)"}
