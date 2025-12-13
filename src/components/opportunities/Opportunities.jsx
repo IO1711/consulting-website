@@ -59,7 +59,7 @@ const Opportunities = () => {
         <div className="my-8 md:grid md:grid-cols-4 md:gap-16">
             {loading && <Loader/>}
             {!loading && opportunities.length === 0 && 
-                <div>
+                <div className="mb-30 flex justify-center items-center text-center text-gray-600">
                     There no new opportunities currently.
                 </div>
             }
