@@ -32,7 +32,7 @@ const Home = () => {
     }
 
     return <>
-        <div className="w-full bg-cover bg-center bg-[url(/posterNew.png)] px-10 py-30 md:py-50 rounded-4xl">
+        <div className="w-full bg-cover bg-center bg-[url(/posterNew.webp)] px-10 py-30 md:py-50 rounded-4xl">
             <div className="flex text-[#ffffff]">
                 <div className="flex-[0_0_70%] md:flex-[0_0_35%]">
                     <div className="flex">

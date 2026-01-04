@@ -52,7 +52,7 @@ const Opportunities = () => {
 
     return <>
         <div className="w-full bg-cover bg-position-[center_top_35rem] px-10 py-30 md:py-50 rounded-4xl bg-[#04322f]/60"
-            style={{backgroundImage: `url(/opportunitiesPoster-2-mask2.png)`}}>
+            style={{backgroundImage: `url(/opportunitiesPoster-2-mask2.webp)`}}>
             <div className="text-white text-4xl md:text-7xl">Opportunities</div>
         </div>
         {loading && <div className="mt-20 mb-40 flex justify-center items-center text-center text-gray-600"><Loader/></div>}
