@@ -1,16 +1,79 @@
-# React + Vite
+# 🌐 Consulting Service Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern **consulting service website** built with **React + Vite**, focused on performance, clean architecture, and access-controlled user experiences.  
+The application supports **role-based and subscription-based access**, global state management with **Zustand**, animated UI interactions, and scalable routing.
 
-Currently, two official plugins are available:
+## 🧠 Tech Stack
+- ⚛️ React + Vite
+- 🟨 JavaScript (ES6+)
+- 🧭 React Router
+- 🐻 Zustand (global state management)
+- 🎬 UI Animations
+- 🔐 JWT-based authentication
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
+- 🔐 JWT authentication with global state sharing
+- 🐻 Zustand store for JWT token and API base URL
+- 🧭 Dynamic and nested routing with React Router
+- 🎭 Role-based access control (e.g. admin / user)
+- 💳 Subscription-based access to protected pages
+- 🎬 Animated UI transitions and interactions
+- 🧩 Modular, scalable component architecture
+- ⚡ Fast development and optimized builds with Vite
 
-## React Compiler
+## 📁 Project Structure
+public/
+src/
+├── adminTools/     # Admin-only tools and pages
+├── assets/         # Static assets
+├── auth/           # Authentication logic
+├── components/     # Reusable UI components
+├── router/         # Route definitions & guards
+├── stores/         # Zustand global stores
+├── utility/        # Helpers and utilities
+├── App.css
+├── App.jsx
+├── AppLayout.jsx
+├── index.css
+├── main.jsx
+├── useFetch.js
+.gitignore
+README.md
+eslint.config.js
+index.html
+package.json
+package-lock.json
+vite.config.js
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🧭 Routing & Access Control
+- Routes are managed with **React Router**
+- Protected routes enforce:
+  - Authentication
+  - User role permissions
+  - Active subscription status
+- Layout-based routing via `AppLayout`
 
-## Expanding the ESLint configuration
+## 🐻 State Management
+- **Zustand** is used for lightweight global state
+- Stores shared data such as:
+  - JWT authentication token
+  - API base URL
+  - User role and subscription status
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🎬 Animations
+- Animations enhance user experience and page transitions
+- Used for navigation, page entry, and UI feedback
+- Keeps interactions smooth and modern
+
+## 🚀 Getting Started
+Install dependencies and start the development server:
+
+npm install  
+npm run dev
+
+## 📌 Project Purpose
+This project demonstrates a **real-world consulting platform frontend**, combining authentication, authorization, subscriptions, global state management, animations, and scalable routing patterns.
+
+## 👨‍💻 Author
+**Bilolbek Rayimov**  
+Full-Stack Developer — React • JavaScript • Zustand • JWT
