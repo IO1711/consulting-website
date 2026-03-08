@@ -1,51 +1,72 @@
 import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import { useAuthStore } from "../stores/AuthStore";
 import Loader from "../utility/Loader";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 const ManageJoinRequests = () => {
     const { courseId } = useParams();
 
-    const [course, setCourse] = useState(null);
     const [requests, setRequests] = useState([]);
     const [approvedUsers, setApprovedUsers] = useState([]);
-    const [loading, setLoading] = useState(false);
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
     const token = useAuthStore((s) => s.token);
+    const queryClient = useQueryClient();
 
+    const { data: course = null, isLoading: isCourseLoading } = useQuery({
+        queryKey: queryKeys.course(baseUrl, courseId),
+        queryFn: () =>
+            apiRequest(baseUrl, `api/v1/get/getCourse/${courseId}`, { token }),
+        enabled: Boolean(courseId),
+    });
+
+    const { data: joinRequestsData = [], isLoading: isRequestsLoading } = useQuery({
+        queryKey: queryKeys.joinRequests(baseUrl, courseId, token),
+        queryFn: () =>
+            apiRequest(baseUrl, `api/v1/admin/getCourseJoinRequests/${courseId}`, {
+                token,
+            }),
+        enabled: Boolean(courseId && token),
+    });
 
     useEffect(() => {
-        setLoading(true);
-        getCourseDetails();
+        setRequests(joinRequestsData);
+    }, [joinRequestsData]);
 
-        getRequests();
-    }, []);
+    const rejectRequestMutation = useMutation({
+        mutationFn: (requestId) =>
+            apiRequest(baseUrl, `api/v1/admin/deleteCourseJoinRequest/${requestId}`, {
+                method: "DELETE",
+                token,
+            }),
+        onSuccess: (_, requestId) => {
+            queryClient.setQueryData(
+                queryKeys.joinRequests(baseUrl, courseId, token),
+                (prev = []) => prev.filter((item) => item.id !== requestId)
+            );
+        },
+    });
 
-    const getCourseDetails = async () => {
-        const response = await fetch(`${baseUrl}api/v1/get/getCourse/${courseId}`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-        const data = await response.json();
-        console.log(JSON.stringify(data));
-
-        setCourse(data);
-    }
-
-    const getRequests = async () => {
-        const response = await fetch(`${baseUrl}api/v1/admin/getCourseJoinRequests/${courseId}`, {
-            headers : {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-        const data = await response.json();
-
-        console.log(JSON.stringify(data));
-        setLoading(false);
-        setRequests(data);
-    }
+    const saveApprovedMutation = useMutation({
+        mutationFn: (payload) =>
+            apiRequest(baseUrl, "api/v1/admin/saveLearners", {
+                method: "POST",
+                token,
+                body: payload,
+            }),
+        onSuccess: () => {
+            setApprovedUsers([]);
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.learners(baseUrl, courseId, token),
+            });
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.course(baseUrl, courseId),
+            });
+        },
+    });
 
     const handleApprove = (req) => {
         const approved = {
@@ -56,37 +77,20 @@ const ManageJoinRequests = () => {
 
         setApprovedUsers(prev => [...prev, approved]);
         setRequests(prev => prev.filter(r => r.userId !== req.userId));
+        queryClient.setQueryData(
+            queryKeys.joinRequests(baseUrl, courseId, token),
+            (prev = []) => prev.filter((item) => item.userId !== req.userId)
+        );
     };
 
     const handleReject = async (req) => {
-        const response = await fetch(`${baseUrl}api/v1/admin/deleteCourseJoinRequest/${req.id}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type" : "application/json",
-                "Authorization": `Bearer ${token}`
-            }
-        });
-        const data = await response.json();
-
-        console.log(JSON.stringify(data));
-
+        await rejectRequestMutation.mutateAsync(req.id);
         setRequests(prev => prev.filter(r => r.userId !== req.userId));
     };
 
     const handleSaveApproved = async () => {
-        console.log("Approved Users:", approvedUsers);
-        const response = await fetch(`${baseUrl}api/v1/admin/saveLearners`, {
-            method: "POST",
-            headers: {
-                "Content-Type" : "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(approvedUsers)
-        });
-
-        const data = await response.json();
-
-        console.log(JSON.stringify(data));
+        if (approvedUsers.length === 0) return;
+        await saveApprovedMutation.mutateAsync(approvedUsers);
     };
 
     const getButtonStyle = (disabled = false) => ({
@@ -94,7 +98,10 @@ const ManageJoinRequests = () => {
         cursor: disabled ? "not-allowed" : "pointer",
     });
 
-    if (!course) return <div className="p-6">Loading...</div>;
+    const loading = isCourseLoading || isRequestsLoading;
+
+    if (!course && loading) return <div className="p-6">Loading...</div>;
+    if (!course) return <div className="p-6">Could not load course.</div>;
 
     return <>
         {loading && <Loader/>}

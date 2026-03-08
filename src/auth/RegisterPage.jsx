@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/AuthStore";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
+import { apiRequest } from "../lib/apiClient";
 
 const RegisterPage = () => {
   const avatars = [
@@ -33,6 +35,22 @@ const RegisterPage = () => {
   const setToken = useAuthStore((s) => s.login);
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
+  const registerMutation = useMutation({
+    mutationFn: (payload) =>
+      apiRequest(baseUrl, "api/v1/auth/register", {
+        method: "POST",
+        body: payload,
+      }),
+  });
+
+  const loginMutation = useMutation({
+    mutationFn: ({ email, password }) =>
+      apiRequest(baseUrl, "api/v1/auth/login", {
+        method: "POST",
+        body: { email, password },
+      }),
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -49,26 +67,6 @@ const RegisterPage = () => {
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&()[\]{}^#_+\-=|~`]{8,}$/;
     return regex.test(password);
   };
-
-  const login = async (email, password) => {
-    const response = await fetch(`${baseUrl}api/v1/auth/login`, {
-        method: "POST",
-        headers: {
-            "Content-Type" : "application/json"
-        },
-        body: JSON.stringify({
-            email: email,
-            password: password
-        })
-    });
-
-    const data = await response.json();
-
-    console.log(JSON.stringify(data));
-    setToken(data.token);
-    
-    navigate("/userPage");
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -103,17 +101,13 @@ const RegisterPage = () => {
     };
     console.log("Register payload: ", payload);
 
-    const response = await fetch(`${baseUrl}api/v1/auth/register`, {
-        method: "POST",
-        headers: {
-            "Content-Type" : "application/json"
-        },
-        body: JSON.stringify(payload)
+    await registerMutation.mutateAsync(payload);
+    const data = await loginMutation.mutateAsync({
+      email: payload.email,
+      password: payload.password,
     });
-
-    const data = await response.json();
-
-    login(payload.email, payload.password);
+    setToken(data.token);
+    navigate("/userPage");
   };
 
   return (

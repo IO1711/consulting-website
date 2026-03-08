@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useAuthStore } from "../../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
 import { useBaseUrlStore } from "../../stores/BaseUrlStore";
+import { apiRequest } from "../../lib/apiClient";
 
 const CheckDocs = () => {
 
@@ -12,6 +14,15 @@ const CheckDocs = () => {
     const [program, setProgram] = useState("");
     const [comment, setComment] = useState("");
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
+
+    const createDocRequestMutation = useMutation({
+      mutationFn: (formData) =>
+        apiRequest(baseUrl, "api/v1/request/docRequest", {
+          method: "POST",
+          token,
+          body: formData,
+        }),
+    });
 
     const handleFileChange = (e) => {
       const selected = e.target.files ? Array.from(e.target.files) : [];
@@ -42,16 +53,7 @@ const CheckDocs = () => {
         comment: comment
       });
 
-      const response = await fetch(`${baseUrl}api/v1/request/docRequest`,{
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        },
-        body: formData
-      });
-      const data = await response.json();
-
-      console.log(JSON.stringify(data));
+      await createDocRequestMutation.mutateAsync(formData);
     }
 
 

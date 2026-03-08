@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import SuccessTick from "../utility/SuccessTick";
 import Loader from "../utility/Loader";
 import { useAuthStore } from "../stores/AuthStore";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 const AddCourse = () => {
   const [courseData, setCourseData] = useState({
@@ -16,8 +19,24 @@ const AddCourse = () => {
   });
   const token = useAuthStore((s) => s.token);
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
-  const [loading, setLoading] = useState(false);
   const [showTick, setShowTick] = useState(false);
+  const queryClient = useQueryClient();
+
+  const saveCourseMutation = useMutation({
+    mutationFn: (payload) =>
+      apiRequest(baseUrl, "api/v1/admin/saveCourse", {
+        method: "POST",
+        token,
+        body: payload,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.courses(baseUrl) });
+      setShowTick(true);
+      setTimeout(() => {
+        setShowTick(false);
+      }, 3000);
+    },
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,26 +44,10 @@ const AddCourse = () => {
   };
 
   const handleSave = () => {
-    setLoading(true);
-    console.log(courseData);
-    fetch(`${baseUrl}api/v1/admin/saveCourse`, {
-      method: "POST",
-      headers : {
-        "Content-Type" : "application/json",
-        "Authorization" : `Bearer: ${token}`
-      },
-      body: JSON.stringify(courseData)
-    }).then(response => {
-      return response.json();
-    }).then(data => {
-      console.log(JSON.stringify(data));
-      setLoading(false);
-      setShowTick(true);
-      setTimeout(() => {
-        setShowTick(false);
-      }, 3000);
-    })
+    saveCourseMutation.mutate(courseData);
   };
+
+  const loading = saveCourseMutation.isPending;
 
   return (
     <>

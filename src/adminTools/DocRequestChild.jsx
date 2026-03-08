@@ -1,16 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import Notes from "./utilities/Notes";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import { useAuthStore } from "../stores/AuthStore";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 
 const DocRequestChild = () => {
-  const [request, setRequest] = useState({});
   const [showNotes, setShowNotes] = useState(false);
   const [notes, setNotes] = useState([]);
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
   const token = useAuthStore((s) => s.token);
+  const queryClient = useQueryClient();
 
   const { requestId } = useParams();
 
@@ -24,24 +27,14 @@ const DocRequestChild = () => {
     PENDING : "REVIEWING",
     REVIEWING : "COMPLETED"
   }
-
-  useEffect(() => {
-    getRequestData();
-  }, []);
-
-  const getRequestData = async () => {
-    const response = await fetch(
-      `${baseUrl}api/v1/admin/getDocRequest/${requestId}`,
-      {
-        headers : {
-          "Authorization": `Bearer ${token}`
-        }
-      }
-    );
-    const data = await response.json();
-    console.log("Request data: " + JSON.stringify(data));
-    setRequest(data);
-  };
+  const { data: request = {} } = useQuery({
+    queryKey: queryKeys.adminDocRequest(baseUrl, token, requestId),
+    queryFn: () =>
+      apiRequest(baseUrl, `api/v1/admin/getDocRequest/${requestId}`, {
+        token,
+      }),
+    enabled: Boolean(requestId && token),
+  });
 
   const formatDateTime = (isoString) => {
     if (!isoString) return "-";
@@ -63,6 +56,37 @@ const DocRequestChild = () => {
   };
 
   // Parent prepares payload for backend here
+  const saveNotesMutation = useMutation({
+    mutationFn: (payload) =>
+      apiRequest(baseUrl, "api/v1/admin/saveDocCheckNotes", {
+        method: "POST",
+        token,
+        body: payload,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.docRequestNotes(baseUrl, token, requestId),
+      });
+    },
+  });
+
+  const editStatusMutation = useMutation({
+    mutationFn: (payload) =>
+      apiRequest(baseUrl, "api/v1/admin/editDocCheckStatus", {
+        method: "PUT",
+        token,
+        body: payload,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.adminDocRequest(baseUrl, token, requestId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.adminDocRequests(baseUrl, token),
+      });
+    },
+  });
+
   const handleSaveNotes = async () => {
     if (!request.id || notes.length === 0) return;
 
@@ -74,23 +98,7 @@ const DocRequestChild = () => {
 
     console.log("Notes payload to send:", payload);
 
-    // post the payload
-    
-    const res = await fetch(`${baseUrl}api/v1/admin/saveDocCheckNotes`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      console.log(data);
-    }
-    
+    await saveNotesMutation.mutateAsync(payload);
   };
 
   const editRequestStatus = async (requestId, status) => {
@@ -104,18 +112,7 @@ const DocRequestChild = () => {
       status : newStatus[status]
     }
 
-    const response = await fetch(`${baseUrl}api/v1/admin/editDocCheckStatus`, {
-      method: "PUT",
-      headers: {
-        "Content-Type" : "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await response.json();
-
-    console.log(data);
+    await editStatusMutation.mutateAsync(payload);
   }
 
   return (

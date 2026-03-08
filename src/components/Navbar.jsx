@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import SearchBar from "../utility/SearchBar";
 
 const Navbar = () => {
 
@@ -36,7 +37,8 @@ const Navbar = () => {
             </div>
             <div className="flex-1 flex justify-end">
                 <div className="flex">
-                    <img src="/search.png" className="icon"/>
+                    <SearchBar/>
+                    <SearchBar mobile />
                     <Link to="/userpage"><img src="/user.png" className="hidden md:block icon"/></Link>
                     <img src="/hamburger.png" className="icon md:hidden scale-x-[-1] cursor-pointer" onClick={()=>setMobMenu(!mobMenu)}/>
                 </div>

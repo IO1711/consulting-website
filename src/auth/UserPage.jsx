@@ -1,40 +1,27 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/AuthStore";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import Loader from "../utility/Loader";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 const UserPage = () => {
   const token = useAuthStore((s) => s.token);
   const logout = useAuthStore((s) => s.logout);
-  const [user, setUser] = useState({});
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { data: user = {}, isLoading: loading } = useQuery({
+    queryKey: queryKeys.currentUser(baseUrl, token),
+    queryFn: () =>
+      apiRequest(baseUrl, "api/v1/getProtected/getCurrentUser", { token }),
+    enabled: Boolean(token),
+  });
 
   const handleLogout = () => {
     logout();
     navigate("/login", { replace: true });
   };
-
-  useEffect(() => {
-    
-    getUserDetails();
-
-  }, []);
-
-  const getUserDetails = async () => {
-    const response = await fetch(`${baseUrl}api/v1/getProtected/getCurrentUser`, {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    });
-    const data = await response.json();
-    console.log(data);
-    setUser(data);
-    setLoading(false);
-    return data;
-  }
 
   return <>
     {loading && <Loader/>}

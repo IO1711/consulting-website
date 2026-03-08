@@ -1,35 +1,32 @@
 import Aos from "aos";
 import "aos/dist/aos.css"
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import NewsItem from "./microComponents/NewsItem";
 import { Link } from "react-router-dom";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 const Home = () => {
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
-    const [opportunities, setOpportunities] = useState([]);
+    const { data: opportunities = [] } = useQuery({
+        queryKey: queryKeys.opportunities(baseUrl),
+        queryFn: () => apiRequest(baseUrl, "api/v1/get/allOpportunities"),
+    });
+
+    const latestOpportunities = useMemo(() => {
+        const sorted = [...opportunities].sort((a, b) => b.id - a.id);
+        return sorted.slice(0, 3);
+    }, [opportunities]);
 
     useEffect(() => {
-        getOpportunities();
         Aos.init({
             once: true,
             mirror: false,
             duration: 800
         });
     }, [])
-
-    const getOpportunities = async () => {
-        const response = await fetch(`${baseUrl}api/v1/get/allOpportunities`);
-        const data = await response.json();
-
-        // sort by id descending (latest first)
-        const sorted = data.sort((a, b) => b.id - a.id);
-
-        // take latest 3
-        const latestThree = sorted.slice(0, 3);
-        console.log(latestThree);
-        setOpportunities(latestThree);
-    }
 
     return <>
         <div className="w-full bg-cover bg-center bg-[url(/posterNew.webp)] px-10 py-30 md:py-50 rounded-4xl">
@@ -57,7 +54,7 @@ const Home = () => {
             </div>
 
             <div className="md:flex md:flex-row md:p-4">
-                {opportunities.length > 0 && opportunities.map((opportunity) => (
+                {latestOpportunities.length > 0 && latestOpportunities.map((opportunity) => (
                     <NewsItem
                         key={opportunity.id}
                         imageName={`${opportunity.country}.png`}
@@ -65,7 +62,7 @@ const Home = () => {
                     />
                 ))}
 
-                {opportunities.length === 0 && (
+                {latestOpportunities.length === 0 && (
                     <div className="text-center text-gray-600 w-full py-10">
                         No new opportunities currently.
                     </div>

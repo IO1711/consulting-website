@@ -1,56 +1,35 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../stores/AuthStore";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import { useNavigate } from "react-router-dom";
 import Loader from "../utility/Loader";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 const MyRequests = () => {
-
-    const [docRequests, setDocRequests] = useState([]);
-    const [visaRequests, setVisaRequests] = useState([]);
-    const [loading, setLoading] = useState(true);
     const token = useAuthStore((s) => s.token);
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        getDocRequests();
-        getVisaRequests();
-    }, []);
+    const { data: docRequests = [], isLoading: isDocRequestsLoading } = useQuery({
+        queryKey: queryKeys.userDocRequests(baseUrl, token),
+        queryFn: () =>
+            apiRequest(baseUrl, "api/v1/getProtected/getUserDocRequests", {
+                token,
+            }),
+        enabled: Boolean(token),
+    });
 
-    const getDocRequests = async () => {
-        try{
-            const response = await fetch(`${baseUrl}api/v1/getProtected/getUserDocRequests`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                }
-            });
-            const data = await response.json();
-            console.log("My requests" + JSON.stringify(data));
-            setDocRequests(data);
-        } catch(e) {
-            console.error(e);
-        } finally {
-            setLoading(false);
-        }
-    }
+    const { data: visaRequests = [], isLoading: isVisaRequestsLoading } = useQuery({
+        queryKey: queryKeys.userVisaRequests(baseUrl, token),
+        queryFn: () =>
+            apiRequest(baseUrl, "api/v1/getProtected/getUserVisaRequests", {
+                token,
+            }),
+        enabled: Boolean(token),
+    });
 
-    const getVisaRequests = async () => {
-        try{
-            const response = await fetch(`${baseUrl}api/v1/getProtected/getUserVisaRequests`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                }
-            });
-            const data = await response.json();
-            console.log(JSON.stringify(data));
-            setVisaRequests(data);
-        } catch(e) {
-            console.error(e);
-        } finally {
-            setLoading(false);
-        }
-    }
+    const loading = isDocRequestsLoading || isVisaRequestsLoading;
 
     const handleView = (requestId) => {
         navigate(`/userpage/requests/${requestId}`)

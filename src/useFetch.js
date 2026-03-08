@@ -1,57 +1,35 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "./lib/apiClient";
 
-export default function useFetch(baseUrl){
-    const [loading, setLoading] = useState(false);
+export default function useFetch(baseUrl) {
+  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
 
-
-    const get = (url) => {
-        setLoading(true);
-        return new Promise((resolve, reject) => {
-            fetch(baseUrl+url)
-            .then(response => response.json())
-            .then(data => {
-                if(!data){
-                    setLoading(false);
-                    return reject(data);
-                }
-                setLoading(false);
-                resolve(data);
-            })
-            .catch(e => {
-                setLoading(false);
-                reject(e);
-            });
-        });
+  const get = async (url, queryKey = ["legacy-fetch", baseUrl, url]) => {
+    setLoading(true);
+    try {
+      return await queryClient.fetchQuery({
+        queryKey,
+        queryFn: () => apiRequest(baseUrl, url),
+      });
+    } finally {
+      setLoading(false);
     }
+  };
 
-
-    const post = (url, body) => {
-        setLoading(true);
-        return new Promise((resolve, reject) => {
-            fetch(baseUrl+url, {
-                ...{
-                    method : "POST",
-                    headers : {
-                        "Content-type" : "application/json"
-                    },
-                    body : JSON.stringify(body)
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(!data){
-                    setLoading(false);
-                    return reject(data);
-                }
-                setLoading(false);
-                resolve(data);
-            })
-            .catch(e => {
-                setLoading(false);
-                reject(e);
-            });
-        })
+  const post = async (url, body, options = {}) => {
+    setLoading(true);
+    try {
+      return await apiRequest(baseUrl, url, {
+        method: "POST",
+        body,
+        ...options,
+      });
+    } finally {
+      setLoading(false);
     }
+  };
 
-    return {get, post, loading};
+  return { get, post, loading };
 }

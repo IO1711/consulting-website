@@ -1,27 +1,40 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import Loader from "../utility/Loader";
 import { useAuthStore } from "../stores/AuthStore";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 const EditCourse = () => {
 
-    const [courses, setCourses] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");   // 🔍 search state
     const navigate = useNavigate();
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
-    const [loading, setLoading] = useState(false);
     const token = useAuthStore((s) => s.token);
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-      getAllCourses();
-    }, []);
+    const { data: courses = [] } = useQuery({
+      queryKey: queryKeys.courses(baseUrl),
+      queryFn: () => apiRequest(baseUrl, "api/v1/get/allCourses"),
+    });
 
-    const getAllCourses = async () => {
-      const response = await fetch(`${baseUrl}api/v1/get/allCourses`);
-      const data = await response.json();
-      setCourses(data);
-    };
+    const deleteCourseMutation = useMutation({
+      mutationFn: (courseId) =>
+        apiRequest(baseUrl, `api/v1/admin/deleteCourse/${courseId}`, {
+          method: "DELETE",
+          token,
+        }),
+      onSuccess: (_, courseId) => {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.courses(baseUrl),
+        });
+        queryClient.removeQueries({
+          queryKey: queryKeys.course(baseUrl, courseId),
+        });
+      },
+    });
 
     const handleEdit = (courseId) => {
       navigate(`/adminPage/editCourse/${courseId}`);
@@ -36,19 +49,10 @@ const EditCourse = () => {
     }
 
     const handleDelete = async (courseId) => {
-      setLoading(true);
-      const response = await fetch(`${baseUrl}api/v1/admin/deleteCourse/${courseId}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
-      const data = await response.json();
-      setLoading(false);
-      getAllCourses();
-
-      console.log(JSON.stringify(data));
+      await deleteCourseMutation.mutateAsync(courseId);
     }
+
+    const loading = deleteCourseMutation.isPending;
 
     // 🔎 COMPUTED FILTERED COURSES
     const filteredCourses = courses.filter((c) =>

@@ -1,7 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import { useAuthStore } from "../stores/AuthStore";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 const EditCourseChild = () => {
   const { courseId } = useParams();
@@ -9,6 +12,35 @@ const EditCourseChild = () => {
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
   const effectiveCourseId = courseId ?? "1";
   const token = useAuthStore((s) => s.token);
+  const queryClient = useQueryClient();
+
+  const saveRecordingsMutation = useMutation({
+    mutationFn: (payload) =>
+      apiRequest(baseUrl, "api/v1/admin/saveRecordings", {
+        method: "POST",
+        token,
+        body: payload,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.recordings(baseUrl, effectiveCourseId, token),
+      });
+    },
+  });
+
+  const saveResourceMutation = useMutation({
+    mutationFn: (payload) =>
+      apiRequest(baseUrl, "api/v1/admin/saveResource", {
+        method: "POST",
+        token,
+        body: payload,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.resources(baseUrl, effectiveCourseId, token),
+      });
+    },
+  });
 
   // ---- Form 1: list of { code, courseId } ----
   const [recordings, setRecordings] = useState([
@@ -48,20 +80,7 @@ const EditCourseChild = () => {
     // For now just log it – replace with your real API call
     console.log("Submitting recordings payload:", payload);
 
-    // Example with fetch (when backend is ready):
-    
-    fetch(`${baseUrl}api/v1/admin/saveRecordings`, {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-       },
-      body: JSON.stringify(payload),
-    })
-      .then(res => res.json())
-      .then(data => console.log(JSON.stringify(data)))
-      .catch(err => console.error(err));
-    
+    saveRecordingsMutation.mutate(payload);
   };
 
   // ---- Form 2: file upload ----
@@ -90,19 +109,7 @@ const handleSubmitFile = (e) => {
     courseId: Number(effectiveCourseId),
   });
 
-  // When backend is ready, something like:
-  
-  fetch(`${baseUrl}api/v1/admin/saveResource`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${token}`
-    },
-    body: formData, // DON'T set Content-Type manually; browser will set boundary
-  })
-    .then(res => res.json())
-    .then(data => console.log(data))
-    .catch(err => console.error(err));
-  
+  saveResourceMutation.mutate(formData);
 };
 
 

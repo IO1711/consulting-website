@@ -1,31 +1,22 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { NavLink, Outlet, useParams } from "react-router-dom";
 import { useBaseUrlStore } from "../../stores/BaseUrlStore";
 import { useAuthStore } from "../../stores/AuthStore";
+import { apiRequest } from "../../lib/apiClient";
+import { queryKeys } from "../../lib/queryKeys";
 
 const CoursePage = () => {
 
-  const [course, setCourse] = useState({});
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
   const token = useAuthStore((s) => s.token);
 
   const {courseId} = useParams();
-
-  useEffect(() => {
-    getCourseData()
-  }, []);
-
-  const getCourseData = async () => {
-    const response = await fetch(`${baseUrl}api/v1/get/getCourse/${courseId}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    })
-    const data = await response.json();
-
-    console.log("Fetched: " + JSON.stringify(data));
-    setCourse(data);
-  }
+  const { data: course = {} } = useQuery({
+    queryKey: queryKeys.course(baseUrl, courseId),
+    queryFn: () =>
+      apiRequest(baseUrl, `api/v1/get/getCourse/${courseId}`, { token }),
+    enabled: Boolean(courseId),
+  });
   
   const formatDate = (isoString) =>
     new Date(isoString).toLocaleDateString("en-GB", {

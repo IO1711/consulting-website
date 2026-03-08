@@ -1,15 +1,6 @@
 const GrantItem = (props) => {
   const setGrantDetails = () => {
-    props.onClick(
-      props.country,
-      props.programType,
-      props.startDate,
-      props.regDLine,
-      props.ageReq,
-      props.majorReq,
-      props.opportunity.description,
-      props.opportunity.link
-    );
+    props.onClick(props.opportunity);
   };
 
   return (

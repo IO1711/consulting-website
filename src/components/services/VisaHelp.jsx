@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useAuthStore } from "../../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
 import { useBaseUrlStore } from "../../stores/BaseUrlStore";
+import { apiRequest } from "../../lib/apiClient";
 
 const VisaHelp = () => {
 
@@ -12,10 +14,18 @@ const VisaHelp = () => {
     country : "",
     purpose : ""
   });
-  const [loading, setLoading] = useState(false);
   const token = useAuthStore((s) => s.token);
   const navigate = useNavigate();
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
+
+  const createVisaRequestMutation = useMutation({
+    mutationFn: (payload) =>
+      apiRequest(baseUrl, "api/v1/request/visaRequest", {
+        method: "POST",
+        token,
+        body: payload,
+      }),
+  });
 
   const handleFormChange = (index, value) => {
     setRequest((prev) => ({
@@ -33,26 +43,7 @@ const VisaHelp = () => {
       return;
     }
 
-    try{
-      setLoading(true);
-
-      const response = await fetch(`${baseUrl}api/v1/request/visaRequest`, {
-        method: "POST",
-        headers: {
-          "Content-Type" : "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(request)
-      });
-
-      const data = await response.json();
-
-      console.log(JSON.stringify(data));
-    } catch(e){
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
+    await createVisaRequestMutation.mutateAsync(request);
   }
 
   return <>

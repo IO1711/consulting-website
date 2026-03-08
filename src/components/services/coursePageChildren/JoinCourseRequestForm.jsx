@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useAuthStore } from "../../../stores/AuthStore";
 import SuccessTick from "../../../utility/SuccessTick";
 import { useBaseUrlStore } from "../../../stores/BaseUrlStore";
+import { apiRequest } from "../../../lib/apiClient";
 
 const JoinCourseRequestForm = () => {
     const { courseId } = useParams();
@@ -16,11 +18,19 @@ const JoinCourseRequestForm = () => {
         year: "",
     });
 
-    const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
     const degreeOptions = ["Bachelors", "Masters", "PhD"];
     const yearOptions = [1, 2, 3, 4, 5, 6, 7];
+
+    const joinRequestMutation = useMutation({
+        mutationFn: (payload) =>
+            apiRequest(baseUrl, "api/v1/request/joinCourse", {
+                method: "POST",
+                token,
+                body: payload,
+            }),
+    });
 
     const handleChange = (e) => {
         setFormData((prev) => ({
@@ -31,33 +41,15 @@ const JoinCourseRequestForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
         setSuccess(false);
-
-        console.log("Submitting:", formData);
-
-        
-        const res = await fetch(`${baseUrl}api/v1/request/joinCourse`, {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(formData)
-        });
-
-        const data = await res.json();
-
-        console.log(JSON.stringify(data));
-        if (res.ok) {
-            setSuccess(true);
-        }
-
+        await joinRequestMutation.mutateAsync(formData);
+        setSuccess(true);
         setTimeout(() => {
             setSuccess(false);
-            setLoading(false);
         }, 700);
     };
+
+    const loading = joinRequestMutation.isPending;
 
     return (
         <div className="max-w-xl mx-auto mt-10 mb-15 bg-[#fffef8] shadow-md p-8 rounded-xl border border-gray-200">

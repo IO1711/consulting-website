@@ -1,38 +1,18 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../stores/AuthStore";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 const MyCourses = () => {
   const token = useAuthStore((s) => s.token);
-
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
-
-  useEffect(() => {
-    getUserCourses();
-  }, []);
-
-  const getUserCourses = async () => {
-    try {
-      const response = await fetch(
-        `${baseUrl}api/v1/getProtected/getUserCourses`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const data = await response.json();
-
-      console.log("My courses:", data);
-      setCourses(data);
-    } catch (err) {
-      console.error("Error loading courses:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: courses = [], isLoading: loading } = useQuery({
+    queryKey: queryKeys.userCourses(baseUrl, token),
+    queryFn: () =>
+      apiRequest(baseUrl, "api/v1/getProtected/getUserCourses", { token }),
+    enabled: Boolean(token),
+  });
 
   return (
     <div className="max-w-4xl mx-auto mt-6 p-4">

@@ -1,19 +1,16 @@
 import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import { useAuthStore } from "../stores/AuthStore";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 const AddLearners = () => {
     const { courseId } = useParams();
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
     const token = useAuthStore((s) => s.token);
-
-    useEffect(() => {
-        getLearners();
-        getCourseData();
-    }, []);
-
-    const [course, setCourse] = useState({});
+    const queryClient = useQueryClient();
 
     const [allLearners, setAllLearners] = useState([]);
     const [enrolledLearners, setEnrolledLearners] = useState([]);
@@ -29,7 +26,6 @@ const AddLearners = () => {
         return full.includes(searchTerm.toLowerCase());
     });
 
-    const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
 
     const handleAdd = (u) => {
@@ -40,61 +36,61 @@ const AddLearners = () => {
         setAllLearners(prev => prev.filter(l => l.id !== u.id)); 
     };
 
-    const getCourseData = async () => {
-        const response = await fetch(`${baseUrl}api/v1/get/getCourse/${courseId}`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-        const data = await response.json();
-        console.log(JSON.stringify(data));
-        setCourse(data);
-    }
+    const { data: course = {} } = useQuery({
+        queryKey: queryKeys.course(baseUrl, courseId),
+        queryFn: () =>
+            apiRequest(baseUrl, `api/v1/get/getCourse/${courseId}`, { token }),
+        enabled: Boolean(courseId),
+    });
 
-    const getLearners = async () => {
-        const response = await fetch(`${baseUrl}api/v1/admin/getAllUsers`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-        const data = await response.json();
+    const { data: users = [] } = useQuery({
+        queryKey: queryKeys.allUsers(baseUrl, token),
+        queryFn: () => apiRequest(baseUrl, "api/v1/admin/getAllUsers", { token }),
+        enabled: Boolean(token),
+    });
 
-        const enrolledResponse = await fetch(`${baseUrl}api/v1/getProtected/getLearners/${courseId}`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-        const enrolledData = await enrolledResponse.json();
+    const { data: currentLearners = [] } = useQuery({
+        queryKey: queryKeys.learners(baseUrl, courseId, token),
+        queryFn: () =>
+            apiRequest(baseUrl, `api/v1/getProtected/getLearners/${courseId}`, {
+                token,
+            }),
+        enabled: Boolean(courseId && token),
+    });
 
-        console.log(JSON.stringify(data));
-        setAllLearners(data);
-        setEnrolledLearners(enrolledData);
-    }    
+    useEffect(() => {
+        const enrolledIds = new Set(currentLearners.map((u) => u.id));
+        setEnrolledLearners(currentLearners);
+        setAllLearners(users.filter((u) => !enrolledIds.has(u.id)));
+    }, [currentLearners, users]);
+
+    const saveLearnersMutation = useMutation({
+        mutationFn: (payload) =>
+            apiRequest(baseUrl, "api/v1/admin/saveLearners", {
+                method: "POST",
+                token,
+                body: payload,
+            }),
+        onSuccess: () => {
+            setSaved(true);
+            setSelectedLearners([]);
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.learners(baseUrl, courseId, token),
+            });
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.course(baseUrl, courseId),
+            });
+        },
+    });
 
     const handleSave = async () => {
         if (selectedLearners.length === 0) return;
 
-        setSaving(true);
         setSaved(false);
-
-        try {
-            await fetch(`${baseUrl}api/v1/admin/saveLearners`, {
-                method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(selectedLearners),
-            });
-
-            setSaved(true);
-            setSelectedLearners([]);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setSaving(false);
-        }
+        await saveLearnersMutation.mutateAsync(selectedLearners);
     };
+
+    const saving = saveLearnersMutation.isPending;
 
     return (
         <div className="max-w-7xl mx-auto mt-10 p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -177,22 +173,3 @@ const AddLearners = () => {
 };
 
 export default AddLearners;
-
-
-
-
-
-/*
-    const baseUrl = useBaseUrlStore((s) => s.baseUrl);
-
-    useEffect(() => {
-        getLearners();
-    }, []);
-
-    const getLearners = async () => {
-        const response = await fetch(`${baseUrl}api/v1/admin/getAllUsers`);
-        const data = await response.json();
-
-        console.log(JSON.stringify(data));
-    }
-*/

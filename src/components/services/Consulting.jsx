@@ -1,28 +1,16 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import ConsultingCard from "./ConsultingCard";
 import { useBaseUrlStore } from "../../stores/BaseUrlStore";
 import Loader from "../../utility/Loader";
+import { apiRequest } from "../../lib/apiClient";
+import { queryKeys } from "../../lib/queryKeys";
 
 const Consulting = () => {
-
-    const [courses, setCourses] = useState([]);
-    const [loading, setLoading] = useState(false);
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
-
-    useEffect(() => {
-      loadCourses();
-    }, []);
-
-    const loadCourses = async () => {
-      setLoading(true);
-      const response = await fetch(`${baseUrl}api/v1/get/allCourses`);
-      const data = await response.json();
-
-      console.log(data);
-
-      setCourses(data);
-      setLoading(false);
-    }
+    const { data: courses = [], isLoading: loading } = useQuery({
+      queryKey: queryKeys.courses(baseUrl),
+      queryFn: () => apiRequest(baseUrl, "api/v1/get/allCourses"),
+    });
 
     return <>
       <section className={`w-full bg-[#fffef8] text-[#04322f] ${courses.length < 4 ? "md:mb-50" : ""}`}>

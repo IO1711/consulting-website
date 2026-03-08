@@ -1,37 +1,22 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import { useAuthStore } from "../stores/AuthStore";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 const DocRequests = () => {
-  const [requests, setRequests] = useState([]);
   const navigate = useNavigate();
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
   const token = useAuthStore((s) => s.token);
-
-  useEffect(() => {
-    fetchDocRequests();
-  }, []);
-
-  const fetchDocRequests = async () => {
-    try {
-      const response = await fetch(
-        `${baseUrl}api/v1/admin/getDocRequests`,
-        {
-          headers : {
-            "Authorization": `Bearer ${token}`
-          }
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch doc requests");
-      }
-      const data = await response.json();
-      setRequests(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const { data: requests = [] } = useQuery({
+    queryKey: queryKeys.adminDocRequests(baseUrl, token),
+    queryFn: () =>
+      apiRequest(baseUrl, "api/v1/admin/getDocRequests", {
+        token,
+      }),
+    enabled: Boolean(token),
+  });
 
   const getStatusClasses = (status) => {
     switch (status) {

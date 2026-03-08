@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { useAuthStore } from "../stores/AuthStore";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import Loader from "../utility/Loader";
+import { apiRequest } from "../lib/apiClient";
 
 const Login = () => {
   const login = useAuthStore((s) => s.login);
@@ -11,7 +13,6 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
 
   const location = useLocation();
@@ -20,39 +21,32 @@ const Login = () => {
   // Where to go after login (default: home)
   const from = location.state?.from?.pathname || "/";
 
+  const loginMutation = useMutation({
+    mutationFn: ({ email, password }) =>
+      apiRequest(baseUrl, "api/v1/auth/login", {
+        method: "POST",
+        body: {
+          email,
+          password,
+        },
+      }),
+    onSuccess: (data) => {
+      login(data.token);
+      navigate(from, { replace: true });
+    },
+  });
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
     try {
-      const response = await fetch(`${baseUrl}api/v1/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      if (!response.ok) {
-        setError("Invalid email or password.");
-        setLoading(false);
-        return;
-      }
-
-      const data = await response.json();
-      login(data.token);
-      setLoading(false);
-      // go back to the page user tried to access
-      navigate(from, { replace: true });
+      await loginMutation.mutateAsync({ email, password });
     } catch (err) {
-      console.error(err);
-      setLoading(false);
-      setError("Something went wrong. Please try again.");
+      setError(err?.status === 401 ? "Invalid email or password." : "Something went wrong. Please try again.");
     }
   };
+
+  const loading = loginMutation.isPending;
 
   return (
     <div className="min-h-screen bg-neutral-50 flex items-center justify-center px-4">

@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import { useAuthStore } from "../stores/AuthStore";
 import Loader from "../utility/Loader";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 const AddOpportunity = () => {
   const [newOpportunity, setNewOpportunity] = useState({
@@ -16,7 +19,21 @@ const AddOpportunity = () => {
   });
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
   const token = useAuthStore((s) => s.token);
-  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
+
+  const saveOpportunityMutation = useMutation({
+    mutationFn: (payload) =>
+      apiRequest(baseUrl, "api/v1/admin/saveOpportunity", {
+        method: "POST",
+        token,
+        body: payload,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.opportunities(baseUrl),
+      });
+    },
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,21 +45,10 @@ const AddOpportunity = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    fetch(`${baseUrl}api/v1/admin/saveOpportunity`, {
-      method: "POST",
-      headers : {
-        "Content-Type" : "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify(newOpportunity)
-    }).then(response => {
-      return response.json();
-    }).then(data => {
-      console.log(JSON.stringify(data))
-      setLoading(false);
-    })
+    saveOpportunityMutation.mutate(newOpportunity);
   };
+
+  const loading = saveOpportunityMutation.isPending;
 
   return (
     <section className="bg-[#fffef8] rounded-3xl shadow-md border border-[#04322f22] p-8 max-w-4xl mx-auto">

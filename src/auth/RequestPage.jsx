@@ -1,7 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../stores/AuthStore";
+import { apiRequest } from "../lib/apiClient";
+import { queryKeys } from "../lib/queryKeys";
 
 
 const RequestPage = () => {
@@ -9,40 +11,25 @@ const RequestPage = () => {
     const {requestId} = useParams();
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
     const token = useAuthStore((s) => s.token);
-    const [request, setRequest] = useState({});
-    const [notes, setNotes] = useState([]);
+    const { data: request = {} } = useQuery({
+        queryKey: queryKeys.docRequest(baseUrl, token, requestId),
+        queryFn: () =>
+            apiRequest(baseUrl, `api/v1/getProtected/getDocRequest/${requestId}`, {
+                token,
+            }),
+        enabled: Boolean(requestId && token),
+    });
 
-    useEffect(() => {
-        getRequestDetails()
-        getNotes()
-    }, []);
-
-    const getRequestDetails = async () => {
-        const response = await fetch(`${baseUrl}api/v1/getProtected/getDocRequest/${requestId}`, {
-            headers : {
-                Authorization: `Bearer ${token}`
-            }
-        });
-
-        const data = await response.json();
-
-        console.log(JSON.stringify(data));
-        setRequest(data);
-    }
-
-    const getNotes = async () => {
-        const response = await fetch(`${baseUrl}api/v1/getProtected/getDocCheckNotes/${requestId}`, {
-            headers : {
-                Authorization: `Bearer ${token}`
-            }
-        });
-
-        const data = await response.json();
-
-        console.log(JSON.stringify(data));
-        setNotes(data);
-        //console.log("Request ID: " + requestId);
-    }
+    const { data: notes = [] } = useQuery({
+        queryKey: queryKeys.docRequestNotes(baseUrl, token, requestId),
+        queryFn: () =>
+            apiRequest(
+                baseUrl,
+                `api/v1/getProtected/getDocCheckNotes/${requestId}`,
+                { token }
+            ),
+        enabled: Boolean(requestId && token),
+    });
 
     return (
         <div className="max-w-6xl mx-auto mt-10 p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -136,27 +123,3 @@ const RequestPage = () => {
 };
 
 export default RequestPage;
-
-
-/*
-const {requestId} = useParams();
-    const baseUrl = useBaseUrlStore((s) => s.baseUrl);
-    const token = useAuthStore((s) => s.token);
-
-    useEffect(() => {
-        getNotes()
-    });
-
-    const getNotes = async () => {
-        const response = await fetch(`${baseUrl}api/v1/getProtected/getDocCheckNotes/${requestId}`, {
-            headers : {
-                Authorization: `Bearer ${token}`
-            }
-        });
-
-        const data = await response.json();
-
-        console.log(JSON.stringify(data));
-        //console.log("Request ID: " + requestId);
-    }
-*/
