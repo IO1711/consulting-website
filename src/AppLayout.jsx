@@ -3,11 +3,15 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 const AppLayout = () => {
-    return <>
-        <Navbar/>
-        <Outlet/>
-        <Footer/>
-    </>
+    return (
+        <div className="flex-1 flex flex-col">
+            <Navbar/>
+            <main className="flex-1">
+                <Outlet/>
+            </main>
+            <Footer/>
+        </div>
+    );
 }
 
 export default AppLayout;

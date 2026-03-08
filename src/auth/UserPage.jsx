@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/AuthStore";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import Loader from "../utility/Loader";
 
 const UserPage = () => {
   const token = useAuthStore((s) => s.token);
+  const logout = useAuthStore((s) => s.logout);
   const [user, setUser] = useState({});
   const baseUrl = useBaseUrlStore((s) => s.baseUrl);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
 
   useEffect(() => {
     
@@ -38,6 +45,13 @@ const UserPage = () => {
         <h1 className="text-2xl font-semibold">{`${user.firstname} ${user.lastname}`}</h1>
         <p className="text-gray-300">{user.email}</p>
         {user.role === "ADMIN" && <Link to="/adminPage">Admin</Link>}
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="mt-4 rounded-lg border border-white/40 px-4 py-2 text-sm font-medium text-white hover:bg-white hover:text-[#032F2C] transition"
+        >
+          Logout
+        </button>
       </div>
 
     

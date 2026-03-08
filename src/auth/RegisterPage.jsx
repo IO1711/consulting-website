@@ -170,6 +170,13 @@ const RegisterPage = () => {
               Fill in the details below to join the cohort.
             </p>
 
+            <Link
+              to="/"
+              className="mb-6 inline-block rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-800 hover:bg-neutral-100"
+            >
+              Home
+            </Link>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="flex gap-4">
                 <div className="w-1/2">

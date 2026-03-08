@@ -127,6 +127,13 @@ const Login = () => {
             Create one
           </Link>
         </p>
+
+        <Link
+          to="/"
+          className="mt-4 block w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-center text-sm font-medium text-neutral-800 hover:bg-neutral-100"
+        >
+          Home
+        </Link>
       </div>
     </div>
   );
