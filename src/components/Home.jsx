@@ -3,7 +3,6 @@ import "aos/dist/aos.css"
 import { useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import NewsItem from "./microComponents/NewsItem";
-import ImageWithPlaceholder from "./microComponents/ImageWithPlaceholder";
 import { Link } from "react-router-dom";
 import { useBaseUrlStore } from "../stores/BaseUrlStore";
 import { apiRequest } from "../lib/apiClient";
@@ -30,19 +29,8 @@ const Home = () => {
     }, [])
 
     return <>
-        <div className="relative w-full overflow-hidden rounded-4xl px-10 py-30 md:py-50">
-            <ImageWithPlaceholder
-                src="/optimized/heroes/home-hero.jpg"
-                alt=""
-                loading="eager"
-                decoding="sync"
-                fetchPriority="high"
-                className="absolute inset-0"
-                imgClassName="object-cover object-center"
-                placeholderClassName="bg-neutral-300"
-            />
-            <div className="absolute inset-0 bg-[#04322f]/35"></div>
-            <div className="relative flex text-[#ffffff]">
+        <div className="w-full bg-cover bg-center bg-[url(/optimized/heroes/home-hero.jpg)] px-10 py-30 md:py-50 rounded-4xl">
+            <div className="flex text-[#ffffff]">
                 <div className="flex-[0_0_70%] md:flex-[0_0_35%]">
                     <div className="flex">
                         <div className="w-fit text-xl bg-[#495f11] px-3 rounded-full">Be the best</div>

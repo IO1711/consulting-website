@@ -1,4 +1,3 @@
-import ImageWithPlaceholder from "../microComponents/ImageWithPlaceholder";
 import { getCountryCardImageSrc } from "../../lib/imageVariants";
 
 const GrantItem = (props) => {
@@ -15,13 +14,9 @@ const GrantItem = (props) => {
       >
         {/* Image / banner */}
         <div className="relative h-44 md:h-56 w-full overflow-hidden">
-          <ImageWithPlaceholder
-            src={countryImageSrc}
-            alt={props.country ? `${props.country} scholarship` : ""}
-            className="absolute inset-0"
-            imgClassName="object-cover object-center transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
-            decoding="async"
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
+            style={{ backgroundImage: `url(${countryImageSrc})` }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent" />
           <span className="absolute bottom-3 left-3 inline-flex items-center rounded-full bg-[#04322f] px-3 py-1 text-xs font-semibold tracking-wide text-[#fffef8]">

@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import Button from "../Button";
-import ImageWithPlaceholder from "../microComponents/ImageWithPlaceholder";
 import { getCountryDetailImageSrc } from "../../lib/imageVariants";
 
 const GrantDetails = (props) => {
@@ -59,13 +58,12 @@ const GrantDetails = (props) => {
         <div className="h-full pt-16 md:pt-[4.25rem] overflow-y-auto">
           {/* Hero */}
           <div className="relative">
-            <ImageWithPlaceholder
+            <img
               src={detailImageSrc}
               alt={country}
-              className="w-full h-48 md:h-64"
-              imgClassName="object-cover object-center"
               loading="lazy"
               decoding="async"
+              className="w-full h-48 md:h-64 object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             <div className="absolute bottom-3 left-4 flex flex-wrap gap-2">

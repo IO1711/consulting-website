@@ -7,7 +7,6 @@ import Loader from "../../utility/Loader";
 import { apiRequest } from "../../lib/apiClient";
 import { queryKeys } from "../../lib/queryKeys";
 import { useSearchParams } from "react-router-dom";
-import ImageWithPlaceholder from "../microComponents/ImageWithPlaceholder";
 
 const Opportunities = () => {
     const baseUrl = useBaseUrlStore((s) => s.baseUrl);
@@ -86,20 +85,9 @@ const Opportunities = () => {
     ]);
 
     return <>
-        <div className="relative w-full overflow-hidden rounded-4xl px-10 py-30 md:py-50">
-            <ImageWithPlaceholder
-                src="/optimized/heroes/opportunities-hero.jpg"
-                alt=""
-                className="absolute inset-0"
-                imgClassName="object-cover"
-                imgStyle={{ objectPosition: "center 35%" }}
-                loading="eager"
-                decoding="sync"
-                fetchPriority="high"
-                placeholderClassName="bg-neutral-300"
-            />
-            <div className="absolute inset-0 bg-[#04322f]/60"></div>
-            <div className="relative text-white text-4xl md:text-7xl">Opportunities</div>
+        <div className="w-full bg-cover bg-position-[center_top_35rem] px-10 py-30 md:py-50 rounded-4xl bg-[#04322f]/60"
+            style={{backgroundImage: `url(/optimized/heroes/opportunities-hero.jpg)`}}>
+            <div className="text-white text-4xl md:text-7xl">Opportunities</div>
         </div>
         {loading && <div className="mt-20 mb-40 flex justify-center items-center text-center text-gray-600"><Loader/></div>}
         {!loading && opportunities.length === 0 && 
